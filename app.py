@@ -1,5 +1,6 @@
-from flask import Flask
+from flask import Flask,jsonify
 from flask_pymongo import pymongo
+import json
 CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
 client = pymongo.MongoClient(CONNECTION_STRING)
 db = client.get_database('flask_mongodb_atlas')
@@ -10,7 +11,7 @@ def flask_mongodb_atlas():
     return "flask mongodb atlas!"
 @app.route('/query/<string:name>')
 def query_user(name):
-    if event_id:
+    if name:
         users = db.user.find({'name': name})
         x=[]
         if users:
