@@ -15,7 +15,7 @@ def flask_mongodb_atlas():
 @app.route('/query/<string:event_id>')
 def query_user(event_id):
     if event_id:
-        users = db.user.find({"event_id": event_id})
+        users = db.current_collection.find({"event_id": event_id})
         x=[]
         if users:
             for i in users:
@@ -27,15 +27,32 @@ def query_user(event_id):
 #test to insert data to the data base
 @app.route("/insert")
 def test():
-    db.user.insert_one({"event_id": "Mary","event_name":"金瓜石特快車","status": "green","driver_id": "ABC"})
+    db.current_collection.insert_one({"event_id": "001",
+  "event_name":"金瓜石特快車",
+  "status": "green",
+  "driver_id": "ABC",
+  "passenger_id": "XYZ",
+  "acceptble_time_interval": ["2020/10/16 13:00", "2020/10/16 15:00"],
+  "acceptble_start_point": ["海大校門口","新豐街","祥豐街"],
+  "acceptble_end_point": ["九份金瓜石","九份老街","金瓜石博物館"],
+  "acceptable_sex": true,
+  "max_weight": 100,
+  "price": 50,
+  "is_self_helmet": true,
+  "repeat": [true, true, true, true, true, true, true],
+
+  "actual_time": "2020/10/16 13:30",
+  "actual_start_point":"海大校門口",
+  "actual_end_point":"九份老街",
+  "extra_needed": "山路請慢慢騎"})
     return "Insert success"
 @app.route('/delete/<string:event_id>')
 def delete_docs(event_id):
-    db.user.remove({"event_id":event_id})
+    db.current_collection.remove({"event_id":event_id})
     return "Delete success"
 @app.route('/update/<string:event_id>')
 def update_docs(event_id):
-    doc=db.user.update(
+    db.current_collection.update(
         {"event_id" : event_id},
         {"$set":
             {"status": "red"}
