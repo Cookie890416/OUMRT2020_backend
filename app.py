@@ -4,7 +4,7 @@ import json
 import os
 CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
 client = pymongo.MongoClient(CONNECTION_STRING)
-db = client.get_database('flask_mongodb_atlas')
+db = client.flask_mongodb_atlas
 user_collection = pymongo.collection.Collection(db, 'user_collection')
 app = Flask(__name__)
 @app.route('/')
