@@ -30,6 +30,7 @@ def test():
     db.user.insert_one({"event_id": "000","event_name":"金瓜石特快車","status": "green","driver_id": "ABC"})
     return "Connected to the data base!"
 if __name__ == '__main__':
+    app.debug = True
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
 # if __name__ == '__main__':
