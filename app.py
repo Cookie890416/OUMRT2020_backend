@@ -1,7 +1,7 @@
 from flask import Flask, render_template,jsonify, request
 from flask_pymongo import pymongo
 from bson.objectid import ObjectId
-import json
+from flask import json
 import os
 CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
 client = pymongo.MongoClient(CONNECTION_STRING)
