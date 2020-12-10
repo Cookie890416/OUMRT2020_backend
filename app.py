@@ -19,7 +19,7 @@ def query_user(name):
             for i in users:
                 i.pop("_id")
                 x.append(i)
-            return jsonify(x)
+            return "add success"
     else:
         return 'No user found!'
 #test to insert data to the data base
