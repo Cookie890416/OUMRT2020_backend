@@ -11,10 +11,10 @@ app = Flask(__name__)
 @app.route('/')
 def flask_mongodb_atlas():
     return "flask mongodb atlas!"
-@app.route('/query/<string:name>')
-def query_user(name):
-    if name:
-        users = db.user.find({'name': name})
+@app.route('/query/<string:event_id>')
+def query_user(event_id):
+    if event_id:
+        users = db.user.find({'event_id': event_id})
         x=[]
         if users:
             for i in users:
@@ -24,9 +24,9 @@ def query_user(name):
     else:
         return 'No user found!'
 #test to insert data to the data base
-@app.route("/test")
+@app.route("/insert")
 def test():
-    db.user.insert_one({"name": "John"})
+    db.user.insert_one({"event_id": "000","event_name":"金瓜石特快車","status": "green","driver_id": "ABC"})
     return "Connected to the data base!"
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
