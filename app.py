@@ -8,6 +8,18 @@ app = Flask(__name__)
 @app.route('/')
 def flask_mongodb_atlas():
     return "flask mongodb atlas!"
+@app.route('/query/<string:name>')
+def query_user(name):
+    if event_id:
+        users = db.user.find({'name': name})
+        x=[]
+        if users:
+            for i in users:
+                i.pop("_id")
+                x.append(i)
+            return jsonify(x)
+    else:
+        return 'No user found!'
 #test to insert data to the data base
 @app.route("/test")
 def test():
