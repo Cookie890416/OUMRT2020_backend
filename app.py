@@ -21,7 +21,7 @@ def query_user(name):
             for i in users:
                 i.pop("_id")
                 x.append(i)
-            return jsonify(x)
+            return str(x)
     else:
         return 'No user found!'
 #test to insert data to the data base
@@ -29,6 +29,10 @@ def query_user(name):
 def test():
     db.user.insert_one({"name": "Mary","event_name":"金瓜石特快車","status": "green","driver_id": "ABC"})
     return "Insert success"
+@app.route('/delete/<string:event_id>')
+def delete_docs(event_id):
+    db.user.remove({"event_id":event_id})
+    return "Delete success"
 if __name__ == '__main__':
     app.debug = True
     port = int(os.environ.get('PORT', 5000))
