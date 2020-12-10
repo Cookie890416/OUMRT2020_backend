@@ -12,10 +12,10 @@ app.config["JSON_AS_ASCII"] = False
 @app.route('/')
 def flask_mongodb_atlas():
     return "flask mongodb atlas!"
-@app.route('/query/<string:name>')
-def query_user(name):
-    if name:
-        users = db.user.find({"name": name})
+@app.route('/query/<string:event_id>')
+def query_user(event_id):
+    if event_id:
+        users = db.user.find({"event_id": event_id})
         x=[]
         if users:
             for i in users:
@@ -27,12 +27,20 @@ def query_user(name):
 #test to insert data to the data base
 @app.route("/insert")
 def test():
-    db.user.insert_one({"name": "Mary","event_name":"金瓜石特快車","status": "green","driver_id": "ABC"})
+    db.user.insert_one({"event_id": "Mary","event_name":"金瓜石特快車","status": "green","driver_id": "ABC"})
     return "Insert success"
 @app.route('/delete/<string:event_id>')
 def delete_docs(event_id):
     db.user.remove({"event_id":event_id})
     return "Delete success"
+@app.route('/update/<string:event_id>')
+def update_docs(event_id):
+    doc=db.user.update(
+        {"event_id" : event_id},
+        {"$set":
+            {"status": "red"}
+        },upsert=True)
+    return "Update success"
 if __name__ == '__main__':
     app.debug = True
     port = int(os.environ.get('PORT', 5000))
