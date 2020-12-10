@@ -1,6 +1,7 @@
-from flask import Flask,jsonify, request
+from flask import Flask,request
 from flask_pymongo import pymongo
 from flask import json
+from flask import jsonify
 import os
 CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
 client = pymongo.MongoClient(CONNECTION_STRING)
@@ -20,7 +21,7 @@ def query_user(name):
             for i in users:
                 i.pop("_id")
                 x.append(i)
-            return str(x)
+            return jsonify(x)
     else:
         return 'No user found!'
 #test to insert data to the data base
