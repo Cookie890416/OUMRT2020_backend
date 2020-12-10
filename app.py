@@ -14,7 +14,7 @@ def flask_mongodb_atlas():
 @app.route('/query/<string:event_id>')
 def query_user(event_id):
     if event_id:
-        users = db.user.find({'event_id': event_id})
+        users = db.user.find({"event_id": event_id})
         x=[]
         if users:
             for i in users:
