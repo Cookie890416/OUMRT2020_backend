@@ -1,52 +1,36 @@
-from flask import Flask,jsonify, request
-import pymongo 
-from flask_pymongo import PyMongo
+from flask import Flask, render_template,jsonify, request
+from flask_pymongo import pymongo
+from bson.objectid import ObjectId
 import json
-from IPython.utils import process
-client=pymongo.MongoClient(host='127.0.0.1')
-db=client.test
-db_list = client.list_database_names()
-collections = db.user
+import os
+CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
+client = pymongo.MongoClient(CONNECTION_STRING)
+db = client.flask_mongodb_atlas
+user_collection = pymongo.collection.Collection(db, 'user_collection')
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
-mongo = PyMongo(app, uri=process.env.MONGODB_URI )
-
-@app.route('/poster/<string:person>')
-def post_data(person):
-    personobj=json.loads(str(person))
-    collections.insert_one(personobj)
-    return str(person)
-
-@app.route('/find/<string:name>')
-def find_data(name):
-
-    if name:
-        users = mongo.db.user.find({'name':name})
+@app.route('/')
+def flask_mongodb_atlas():
+    return "flask mongodb atlas!"
+@app.route('/query/<string:event_id>')
+def query_user(event_id):
+    if event_id:
+        users = db.user.find({"event_id": event_id})
         x=[]
-        for user in users:
-            user.pop("_id")
-            x.append(user)
-        return jsonify(x)
-
-    
-@app.route('/why')
-def why():
-    return str(db_list)
-
-
-@app.route('')
-def why():
-    return "hello VV"
-    
-
-
-
-@app.route('/hello')
-def hello():
-    return "hello VV"
-
-
-
+        if users:
+            for i in users:
+                i.pop("_id")
+                x.append(i)
+            return jsonify(x)
+    else:
+        return 'No user found!'
+#test to insert data to the data base
+@app.route("/insert")
+def test():
+    db.user.insert_one({"event_id": "000","event_name":"金瓜石特快車","status": "green","driver_id": "ABC"})
+    return "Connected to the data base!"
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
+# if __name__ == '__main__':
+#     app.run(port=8000)
