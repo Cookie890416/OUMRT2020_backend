@@ -20,7 +20,7 @@ def query_user(event_id):
             for i in users:
                 i.pop("_id")
                 x.append(i)
-            return jsonify(x)
+            return x
     else:
         return 'No user found!'
 #test to insert data to the data base
