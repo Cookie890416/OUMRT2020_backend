@@ -1,6 +1,7 @@
 from flask import Flask,jsonify
 from flask_pymongo import pymongo
 import json
+import os
 CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
 client = pymongo.MongoClient(CONNECTION_STRING)
 db = client.get_database('flask_mongodb_atlas')
@@ -27,4 +28,7 @@ def test():
     db.user.insert_one({"name": "John"})
     return "Connected to the data base!"
 if __name__ == '__main__':
-    app.run(port=8000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
+# if __name__ == '__main__':
+#     app.run(port=8000)
