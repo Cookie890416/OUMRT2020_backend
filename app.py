@@ -24,7 +24,7 @@ def query_event(driver_id):
                 
                 result=[]
                 if i["status"]=="white":
-                    return i["event_id"]
+                    return type(i["event_id"])
                     # request=db.request_collection.find({"event_id": i["event_id"]})
                     # for j in request:
                     #     j.pop("_id")
