@@ -23,12 +23,11 @@ def query_event(driver_id):
                 i.pop("_id")
                 result=[]
                 if i["status"]=="white":
-                    for j in db.request_collection.find({"event_id": str(i["event_id"])}):
-                        j.pop("_id")
-                        result.append(j)
-                
-                
-                x.append(result)
+                    return "true"
+                #     for j in db.request_collection.find({"event_id": str(i["event_id"])}):
+                #         j.pop("_id")
+                #         result.append(j)
+                # x.append(result)
 
             # for i in users:
             #     i.pop("_id")
@@ -38,7 +37,7 @@ def query_event(driver_id):
             #     x.append(i["phone_num"])
                 
             #     x.append(i["sex"])
-            return jsonify(x)
+            # return jsonify(x)
     else:
         return 'No user found!'
 @app.route('/query/<string:event_id>')
