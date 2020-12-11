@@ -18,17 +18,17 @@ def query_event(driver_id):
         current_event = db.current_collection.find({"driver_id": driver_id})
         x=[]
         if current_event:
-            result=[]
+            
             for i in current_event:
                 i.pop("_id")
-                result.append(i)
+                x.append(i)
                 if i["status"]=="white":
                     
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
-                        result.append(j)
+                        x.append(j)
                     
-            x.append(result)
+            
         return jsonify(x)
     else:
         return 'No user found!'
