@@ -21,10 +21,11 @@ def query_event(driver_id):
             for i in current_event:
                 i.pop("_id")
                 x.append(i)
-            if current_event["status"]==="white":
-                for j in db.request_collection:
-                    j.pop("_id")
-                    x.append(j)
+                if i["status"]=="white":
+                    for j in db.request_collection.find({"event_id": i["event_id"]}):
+                        j.pop("_id")
+                        i.append(j)
+                x.append(i)
             # for i in users:
             #     i.pop("_id")
                
