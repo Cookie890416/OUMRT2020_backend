@@ -26,7 +26,7 @@ def query_event(event_id,user_id):
                 i.pop("_id")
                 x.append(i)
             
-            return str(x)
+            return jsonify(x)
     else:
         return 'No user found!'
 @app.route('/query/<string:event_id>')
