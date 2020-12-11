@@ -28,8 +28,8 @@ def query_event(driver_id):
                         j.pop("_id")
                         x.append(j)
                     
-            
-        return jsonify(x)
+        
+        return jsonify(",".join(repr(x)for e in x))
     else:
         return 'No user found!'
 @app.route('/query/<string:event_id>')
