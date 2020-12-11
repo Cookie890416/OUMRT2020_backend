@@ -21,10 +21,10 @@ def query_event(event_id,user_id):
         if current_event and users:
             for i in current_event:
                 i.pop("_id")
-                x.append(i.actual_start_point,i.actual_end_point,i.actual_time,i.is_self_helmet,i.extra_needed)
+                x.append(i["actual_start_point"]+i["actual_end_point"]+i["actual_time"]+i["is_self_helmet"]+i["extra_needed"])
             for i in users:
                 i.pop("_id")
-                x.append(i.user_id,i.phone_num,i.sex)
+                x.append(i["user_id"]+i["phone_num"]+i["sex"])
             
             return jsonify(x)
     else:
