@@ -18,14 +18,18 @@ def query_event(driver_id):
         current_event = db.current_collection.find({"driver_id": driver_id})
         x=[]
         if current_event:
+            iTable=[]
             for i in current_event:
                 i.pop("_id")
-                x.append(i)
+                jTable=[]
                 if i["status"]=="white":
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
-                        i.append(j)
-                x.append(i)
+                        jTable.append(j)
+                iTable.append(i)
+                iTable.append(jTable)
+                x.append(iTable)
+
             # for i in users:
             #     i.pop("_id")
                
