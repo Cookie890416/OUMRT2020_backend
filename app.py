@@ -12,24 +12,23 @@ app.config["JSON_AS_ASCII"] = False
 @app.route('/')
 def flask_mongodb_atlas():
     return "flask mongodb atlas!"
-@app.route('/query_driver/<string:event_id>')
-def query_event(event_id):
-    if event_id:
-        request=db.request_collection.find({"event_id": event_id})
+@app.route('/query_driver/<string:driver_id>')
+def query_event(driver_id):
+    if driver_id:
+        current_event = db.current_collection.find({"driver_id": driver_id})
         x=[]
-        if request:
+        if current_event:
             
-            for i in request:
+            for i in current_event:
                 i.pop("_id")
-                x.append(i)
-            return jsonify(x)
-                # result=[]
-                # if i["status"]=="white":
+                
+                result=[]
+                if i["status"]=="white":
                     
-                #     request=db.request_collection.find({"event_id": i["event_id"]})
-                #     for j in request:
-                        
-                #         return "success"
+                    request=db.request_collection.find({"event_id": i["event_id"]})
+                    for j in request:
+                        j.pop("_id")
+                        return "success"
                 #         result.append(j)
                 # x.append(result)
 
