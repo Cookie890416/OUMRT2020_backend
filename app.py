@@ -23,7 +23,7 @@ def query_event(driver_id):
                 i.pop("_id")
                 jTable=[]
                 if i["status"]=="white":
-                    for j in db.request_collection.find({"event_id": i["event_id"]}):
+                    for j in db.request_collection.find({"event_id": str(i["event_id"])}):
                         j.pop("_id")
                         jTable.append(j)
                 iTable.append(i)
