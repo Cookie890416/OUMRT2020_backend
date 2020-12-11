@@ -12,7 +12,7 @@ app.config["JSON_AS_ASCII"] = False
 @app.route('/')
 def flask_mongodb_atlas():
     return "flask mongodb atlas!"
-@app.route('/query_event/<string:event_id>/<string:user_id>')
+@app.route('/query_driver/<string:event_id>/<string:user_id>')
 def query_event(event_id,user_id):
     if event_id and user_id:
         current_event = db.current_collection.find({"event_id": event_id})
@@ -21,23 +21,17 @@ def query_event(event_id,user_id):
         if current_event and users:
             for i in current_event:
                 i.pop("_id")
-                x.append(i["actual_start_point"])
+                x.append(i)
                 
-                x.append(i["actual_end_point"])
-                
-                x.append(i["actual_time"])
-                
-                x.append(i["is_self_helmet"])
-                
-                x.append(i["extra_needed"])
-            for i in users:
-                i.pop("_id")
                
-                x.append(i["user_id"])
+            # for i in users:
+            #     i.pop("_id")
+               
+            #     x.append(i["user_id"])
                 
-                x.append(i["phone_num"])
+            #     x.append(i["phone_num"])
                 
-                x.append(i["sex"])
+            #     x.append(i["sex"])
             return jsonify(x)
     else:
         return 'No user found!'
