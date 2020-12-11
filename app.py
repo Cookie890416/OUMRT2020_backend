@@ -26,7 +26,7 @@ def query_event(driver_id):
                         j.pop("_id")
                         x.append(j)
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
-                        for k in db.user_collection.find({"user_id": i["user_id"]}):
+                        for k in db.user_collection.find({"user_id": j["user_id"]}):
                             k.pop("_id")
                             x.append(k)
         return jsonify(x)
