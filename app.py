@@ -21,7 +21,7 @@ def query_event(driver_id):
             for i in current_event:
                 i.pop("_id")
                 x.append(i)
-            if current_event["status"]=="white":
+            if current_event["status"]==="white":
                 for j in db.request_collection:
                     j.pop("_id")
                     x.append(j)
