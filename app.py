@@ -22,7 +22,7 @@ def query_event(event_id):
             for i in request:
                 i.pop("_id")
                 x.append(i)
-                return jsonify(x)
+            return jsonify(x)
                 # result=[]
                 # if i["status"]=="white":
                     
