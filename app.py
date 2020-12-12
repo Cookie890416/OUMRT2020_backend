@@ -29,7 +29,7 @@ def query_event(driver_id):
                         for k in db.user_collection.find({"user_id": j["user_id"]}):
                             k.pop("_id")
                             x.append(k)
-                    x.append({"reason":"null","final_request":"null","user":"null"})
+                    x.append({"reason":[],"final_request":[],"user":[]})
         return jsonify(x)
     else:
         return 'No user found!'
