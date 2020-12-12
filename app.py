@@ -30,7 +30,7 @@ def query_event(driver_id):
                             k.pop("_id")
                             x.append(k)
                     x.append({"reason":[],"final_request":[],"user":[]})
-        return jsonify(x)
+                    return jsonify(x)
     else:
         return 'No user found!'
 @app.route('/query/<string:event_id>')
