@@ -105,7 +105,7 @@ def query_passenger_white(user_id):
                     for k in db.reject_collection.find({"user_id": j["user_id"]}):
                         k.pop("_id")
                         if k!=None:
-                            j["status"]=="red"
+                            j["status"]="red"
                             k.pop("user_id")
                             r=k.get("rejected_event_list")
                             for s in r:
