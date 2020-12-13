@@ -74,6 +74,7 @@ def query_passengerevent(passenger_id):
                     for j in db.user_collection.find({"user_id": i["driver_id"]}):
                         j.pop("_id")
                     i['user']=j
+                    i.update({"all_request":None,"all_request_user":None,"reason":None})
                     x.append(i)
                     return jsonify(x)
     else:
