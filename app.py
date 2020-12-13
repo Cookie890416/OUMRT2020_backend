@@ -95,7 +95,7 @@ def query_passengerevent(passenger_id):
         return 'No user found!'
 @app.route('/query_passenger/<string:user_id>')#乘客白
 def query_passengerevent(user_id):
-    if passenger_id:
+    if user_id:
         current_event = db.request_collection.find({"user_id": user_id})
         x=[]
         if current_event:
