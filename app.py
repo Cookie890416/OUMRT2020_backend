@@ -93,6 +93,20 @@ def query_passengerevent(passenger_id):
                 #     return jsonify(x)
     else:
         return 'No user found!'
+@app.route('/query_passenger/<string:user_id>')#乘客白
+def query_passengerevent(user_id):
+    if passenger_id:
+        current_event = db.request_collection.find({"user_id": user_id})
+        x=[]
+        if current_event:
+            for i in current_event:
+                i.pop("_id")
+                for j in db.user_collection.find({"event_id": i["event_id"]}):
+                    j.pop("_id") 
+                    x.append(j)
+                    return jsonify(x)
+    else:
+        return 'No user found!'
 @app.route('/query/<string:event_id>')
 def query_user(event_id):
     if event_id:
