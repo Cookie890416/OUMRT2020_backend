@@ -24,6 +24,7 @@ def query_driverevent(driver_id):
                     j={}
                     all_request_user=[]
                     all_request=[]
+                    # ff=np.array[]
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
                         all_request.append(j)
@@ -74,16 +75,8 @@ def query_passengerevent(passenger_id):
                     for j in db.user_collection.find({"user_id": i["driver_id"]}):
                         j.pop("_id")
                     i['user']=j
-                    i.update({"all_request":None,"all_request_user":None,"reason":None})
                     x.append(i)
                     return jsonify(x)
-                # if i["status"]=="red":
-                #     for j in db.user_collection.find({"user_id": i["driver_id"]}):
-                #         j.pop("_id")
-                #     i['user']=j
-                #     i.update({"all_request":None,"all_request_user":None,"reason":None})
-                #     x.append(i)
-                #     return jsonify(x)
     else:
         return 'No user found!'
 @app.route('/query/<string:event_id>')
