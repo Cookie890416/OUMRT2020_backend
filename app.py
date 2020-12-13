@@ -24,9 +24,11 @@ def query_driverevent(driver_id):
                     j={}
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
+                        ff=[]
                         for k in db.user_collection.find({"user_id": j("user_id")}):
                             k.pop("_id")
-                            i['all_request']=k
+                            ff.append(k)
+                        i['all_request']=ff
                     i.update({"reason":None,"final_request":None,"user":None})
                     x.append(i)
                     return jsonify(x)
