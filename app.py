@@ -23,17 +23,18 @@ def query_event(driver_id):
                 # a_dictionary=i
                 x.append(i)
                 if i["status"]=="white":
+                    j={}
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
                         # b_dictionary=j
                         # final_dictionary = {**a_dictionary, **b_dictionary}
-                        x.append(j)
-                    for j in db.request_collection.find({"event_id": i["event_id"]}):
-                        for k in db.user_collection.find({"user_id": j["user_id"]}):
+                    for s in db.request_collection.find({"event_id": i["event_id"]}):
+                        for k in db.user_collection.find({"user_id": s["user_id"]}):
                             k.pop("_id")
                             # c_dictionary=k
                             # final_dictionary = {**final_dictionary, **c_dictionary}
-                            x['all_request_user']=k
+                            j['all_request_user']=k
+                            x.append(j)
                     # d_dictionary={"reason":[],"final_request":[],"user":[]}
                     x.append({"reason":[],"final_request":[],"user":[]})
                     # final_dictionary = {**final_dictionary, **d_dictionary}
