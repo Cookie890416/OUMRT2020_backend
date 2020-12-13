@@ -26,7 +26,7 @@ def query_driverevent(driver_id):
                     # ff=np.array[]
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
-                        for k in db.user_collection.find({"user_id": j("user_id")}):
+                        for k in db.user_collection.find({"user_id": j["user_id"]}):
                             k.pop("_id")
                             # ff.append(k)
                             i['all_user']=k
