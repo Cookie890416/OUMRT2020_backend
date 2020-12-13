@@ -37,7 +37,7 @@ def query_event(driver_id):
                             i['all_request']=j
                     x.append(i)
                     # d_dictionary={"reason":[],"final_request":[],"user":[]}
-                    x.append({"reason":null,"final_request":null,"user":null})
+                    x.append({"reason":none,"final_request":none,"user":none})
                     # final_dictionary = {**final_dictionary, **d_dictionary}
                     # x.append(final_dictionary)
                     return jsonify(x)
