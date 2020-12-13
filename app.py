@@ -70,7 +70,14 @@ def query_passengerevent(passenger_id):
         if current_event:
             for i in current_event:
                 i.pop("_id")
-                if i["status"]=="white" or i["status"]=="green":
+                if i["status"]=="white":
+                    for j in db.user_collection.find({"user_id": i["driver_id"]}):
+                        j.pop("_id")
+                    i['user']=j
+                    i.update({"all_request":None,"all_request_user":None,"reason":None})
+                    x.append(i)
+                    return jsonify(x)
+                if i["status"]=="green":
                     for j in db.user_collection.find({"user_id": i["driver_id"]}):
                         j.pop("_id")
                     i['user']=j
