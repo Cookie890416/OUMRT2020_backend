@@ -99,7 +99,7 @@ def query_passenger_white(user_id):
         x=[]
         for i in db.request_collection.find({"user_id": user_id}):
             i.pop("_id")
-            for j in db.user_collection.find({"event_id": i["event_id"]}):
+            for j in db.current_collection.find({"event_id": i["event_id"]}):
                 j.pop("_id")
                 x.append(j)
             return jsonify(x)
