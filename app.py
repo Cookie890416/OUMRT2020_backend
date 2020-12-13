@@ -63,7 +63,7 @@ def query_driverevent(driver_id):
     else:
         return 'No user found!'
 @app.route('/query_passenger/<string:passenger_id>')
-def query_passengerevent(passenger_id):
+def query_passenger_green(passenger_id):
     if passenger_id:
         current_event = db.current_collection.find({"passenger_id": passenger_id})
         x=[]
@@ -94,7 +94,7 @@ def query_passengerevent(passenger_id):
     else:
         return 'No user found!'
 @app.route('/query_passenger/<string:user_id>')#乘客白
-def query_passengerevent(user_id):
+def query_passenger_white(user_id):
     if user_id:
         current_event = db.request_collection.find({"user_id": user_id})
         x=[]
