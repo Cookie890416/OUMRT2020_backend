@@ -110,7 +110,7 @@ def query_passenger_white(user_id):
 def query_passenger_red(passenger_id):
     if passenger_id:
         x=[]
-        for i in db.request_collection.find({"passenger_id": passenger_id}):
+        for i in db.current_collection.find({"passenger_id": passenger_id}):
             i.pop("_id")
             if i["status"]=="red":
                 for j in db.request_collection.find({"event_id": i["event_id"]}):
