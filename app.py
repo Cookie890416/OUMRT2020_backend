@@ -101,8 +101,9 @@ def query_passenger_white(user_id):
             i.pop("_id")
             for j in db.current_collection.find({"event_id": i["event_id"]}):
                 j.pop("_id")
-                x.append(j)
-            return jsonify(x)
+                if i["status"]=="white": 
+                    x.append(j)
+        return jsonify(x)
     else:
         return 'No user found!'
 
