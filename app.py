@@ -36,7 +36,7 @@ def query_event(driver_id):
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
                         x.append(j)
-                    x.append({"final_request":[]})
+                    
                     for j in db.user_collection.find({"user_id": i["passenger_id"]}):
                         j.pop("_id")
                         x.append(j)
