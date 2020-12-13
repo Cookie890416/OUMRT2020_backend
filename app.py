@@ -58,7 +58,7 @@ def query_event(driver_id):
 
                             k.pop("_id")
                             k.pop("user_id")
-                            r=k.find(y=>y.event_id==i["event_id"])
+                            r=k.FindIndex(y=>y.event_id==i["event_id"])
                             x.append(r.get("reason"))
 
                     x.append({"final_request":[],"user":[]})
