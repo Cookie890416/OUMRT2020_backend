@@ -77,6 +77,13 @@ def query_passengerevent(passenger_id):
                     i.update({"all_request":None,"all_request_user":None,"reason":None})
                     x.append(i)
                     return jsonify(x)
+                # if i["status"]=="red":
+                #     for j in db.user_collection.find({"user_id": i["driver_id"]}):
+                #         j.pop("_id")
+                #     i['user']=j
+                #     i.update({"all_request":None,"all_request_user":None,"reason":None})
+                #     x.append(i)
+                #     return jsonify(x)
     else:
         return 'No user found!'
 @app.route('/query/<string:event_id>')
