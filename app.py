@@ -22,17 +22,17 @@ def query_driverevent(driver_id):
                 i.pop("_id")
                 if i["status"]=="white":
                     j={}
-                    ff=[]
+                    # ff=[]
                     # ff=np.array[]
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
                         for k in db.user_collection.find({"user_id": j("user_id")}):
                             k.pop("_id")
-                            ff.append(k)
-                    # #     i['all_user']=str(ff)
-                    # # i.update({"reason":None,"final_request":None,"user":None})
-                    # x.append(i)
-                    return jsonify(ff)
+                            # ff.append(k)
+                            i['all_user']=k
+                    i.update({"reason":None,"final_request":None,"user":None})
+                    x.append(i)
+                    return jsonify(x)
                 if i["status"]=="green":
                     j={}
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
