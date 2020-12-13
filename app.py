@@ -52,7 +52,7 @@ def query_event(driver_id):
                             r=k.get("rejected_event_list")
                             for s in r:
                                 if s.get("event_id")==i["event_id"]:
-                                    i['reason']=s["event_id"]
+                                    i['reason']=s["reason"]
                     i.update({"all_request":None,"all_request_user":None})
                     i.update({"final_request":None,"user":None})
                     x.append(i)
