@@ -14,7 +14,8 @@ def flask_mongodb_atlas():
     return "flask mongodb atlas!"
 @app.route('/test-field',methods=['POST'])
 def showField():
-    return str(request.data)
+    requestJson = request.get_json(force=True)
+    return requestJson
 @app.route('/query_driver/<string:driver_id>')
 def query_driverevent(driver_id):
     if driver_id:
