@@ -31,7 +31,7 @@ def query_driverevent(driver_id):
                     # #     i['all_user']=str(ff)
                     # # i.update({"reason":None,"final_request":None,"user":None})
                     # x.append(i)
-                    return jsonify(ff)
+                        return jsonify(ff)
                 if i["status"]=="green":
                     j={}
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
