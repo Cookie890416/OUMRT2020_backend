@@ -55,9 +55,11 @@ def query_event(driver_id):
                     
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         for k in db.reject_collection.find({"user_id": j["user_id"]}):
+
                             k.pop("_id")
                             k.pop("user_id")
-                            x.append(k)
+                            r=k.find(y=>y.event_id==i["event_id"])
+                            x.append(r.get("reason"))
 
                     x.append({"final_request":[],"user":[]})
                     return jsonify(x)
