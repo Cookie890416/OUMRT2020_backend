@@ -54,7 +54,7 @@ def query_event(driver_id):
                     
                     return jsonify(x)
                 if i["status"]=="red":
-                    x.append({"all_request":[],"all_request_user":[]})
+                    
                     
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         for k in db.reject_collection.find({"user_id": j["user_id"]}):
@@ -65,9 +65,9 @@ def query_event(driver_id):
                             for s in r:
                                 if s.get("event_id")==i["event_id"]:
                                     i['reason']=s["event_id"]
+                    i.update({"all_request":None,"all_request_user":None})
+                    i.update({"final_request":None,"user":None})
                     x.append(i)
-
-                    x.append({"final_request":[],"user":[]})
                     return jsonify(x)
     else:
         return 'No user found!'
