@@ -33,15 +33,15 @@ def query_event(driver_id):
                     return jsonify(x)
                 if i["status"]=="green":
                     x.append({"all_request":[],"all_request_user":[],"reason":[]})
-                    j={}
+                    result={}
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
-                        
+                        result.append(j)
                     
                     for k in db.user_collection.find({"user_id": i["passenger_id"]}):
                         k.pop("_id")
-                        j.append(k)
-                    x.append(j)
+                        result.append(k)
+                    x.append(result)
                     return jsonify(x)
                 if i["status"]=="red":
                     x.append({"all_request":[],"all_request_user":[]})
