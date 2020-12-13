@@ -20,45 +20,33 @@ def query_event(driver_id):
         if current_event:
             for i in current_event:
                 i.pop("_id")
-                # a_dictionary=i
-                
                 if i["status"]=="white":
                     j={}
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
-                        # b_dictionary=j
-                        # final_dictionary = {**a_dictionary, **b_dictionary}
                     for s in db.request_collection.find({"event_id": i["event_id"]}):
                         for k in db.user_collection.find({"user_id": s["user_id"]}):
                             k.pop("_id")
-                            # c_dictionary=k
-                            # final_dictionary = {**final_dictionary, **c_dictionary}
                             i['all_request_user']=k
                             i['all_request']=j
-                    
-                    # d_dictionary={"reason":[],"final_request":[],"user":[]}
                     i.update({"reason":None,"final_request":None,"user":None})
                     x.append(i)
-                    # final_dictionary = {**final_dictionary, **d_dictionary}
-                    # x.append(final_dictionary)
                     return jsonify(x)
                 if i["status"]=="green":
-                    x.append({"all_request":[],"all_request_user":[],"reason":[]})
+                    j={}
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
-                        x.append(j)
-                    
-                    for j in db.user_collection.find({"user_id": i["passenger_id"]}):
-                        j.pop("_id")
-                        x.append(j)
-                    
+                        
+                    for k in db.user_collection.find({"user_id": i["passenger_id"]}):
+                        k.pop("_id")
+                        i['all_request']=j
+                        i['all_request_user']=k
+                    i.update({"all_request":None,"all_request_user":None,"reason":None})
+                    x.append(i)
                     return jsonify(x)
                 if i["status"]=="red":
-                    
-                    
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         for k in db.reject_collection.find({"user_id": j["user_id"]}):
-
                             k.pop("_id")
                             k.pop("user_id")
                             r=k.get("rejected_event_list")
