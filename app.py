@@ -39,7 +39,7 @@ def query_driverevent(driver_id):
                         k.pop("_id")
                         i['final_request']=j
                         i['user']=k
-                    i.update({"all_request":None,"reason":None})
+                    i.update({"all_request":None,"all_request_user":None,"reason":None})
                     x.append(i)
                     return jsonify(x)
                 if i["status"]=="red":
