@@ -33,14 +33,15 @@ def query_event(driver_id):
                     return jsonify(x)
                 if i["status"]=="green":
                     x.append({"all_request":[],"all_request_user":[],"reason":[]})
+                    j={}
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
-                        x.append(j)
+                        
                     
-                    for j in db.user_collection.find({"user_id": i["passenger_id"]}):
-                        j.pop("_id")
-                        x.append(j)
-                    
+                    for k in db.user_collection.find({"user_id": i["passenger_id"]}):
+                        k.pop("_id")
+                        j.append(k)
+                    x.append(j)
                     return jsonify(x)
                 if i["status"]=="red":
                     x.append({"all_request":[],"all_request_user":[]})
@@ -55,12 +56,13 @@ def query_event(driver_id):
                     return jsonify(x)
     else:
         return 'No user found!'
-# @app.route('/query_user/<string:user_id>')
+# @app.route('/query_user/<string:user_id>/<string:status>')
 # def query_event(user_id):
 #     if user_id:
 #         current_event = db.user_collection.find({"user_id": user_id})
+#         status=db.current_collection.find({"status": i["status"]})
 #         x=[]
-#         if current_event:
+#         if current_event and status:
 #             for i in current_event:
 #                 i.pop("_id")
 #                 x.append(i)
@@ -69,7 +71,7 @@ def query_event(driver_id):
 #                         j.pop("_id")
 #                         x.append(j)
 #                 return jsonify(x)
-@app.route('/query/<string:event_id>')
+# @app.route('/query/<string:event_id>')
 def query_user(event_id):
     if event_id:
         users = db.current_collection.find({"event_id": event_id})
