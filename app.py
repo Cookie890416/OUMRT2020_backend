@@ -67,13 +67,14 @@ def query_passengerevent(passenger_id):
         if current_event:
             for i in current_event:
                 i.pop("_id")
-                x.append(i)
+                
                 if i["status"]=="white":
-
                     for j in db.user_collection.find({"user_id": i["driver_id"]}):
                         j.pop("_id")
-                        x.append(j)
-                return jsonify(x)
+                        
+                    i['User']=j
+                    x.append(i)
+                    return jsonify(x)
     else:
         return 'No user found!'
 @app.route('/query/<string:event_id>')
