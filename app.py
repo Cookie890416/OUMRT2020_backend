@@ -20,24 +20,24 @@ def query_event(driver_id):
         if current_event:
             for i in current_event:
                 i.pop("_id")
-                a_dictionary=i
-                # x.append(i)
+                # a_dictionary=i
+                x.append(i)
                 if i["status"]=="white":
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
                         b_dictionary=j
-                        final_dictionary = {**a_dictionary, **b_dictionary}
-                        # x.append(j)
+                        # final_dictionary = {**a_dictionary, **b_dictionary}
+                        x.append(j)
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         for k in db.user_collection.find({"user_id": j["user_id"]}):
                             k.pop("_id")
                             c_dictionary=k
-                            final_dictionary = {**final_dictionary, **c_dictionary}
-                            # x.append(k)
-                    d_dictionary={"reason":[],"final_request":[],"user":[]}
-                    # x.append({"reason":[],"final_request":[],"user":[]})
-                    final_dictionary = {**final_dictionary, **d_dictionary}
-                    x.append(final_dictionary)
+                            # final_dictionary = {**final_dictionary, **c_dictionary}
+                            x.append(k)
+                    # d_dictionary={"reason":[],"final_request":[],"user":[]}
+                    x.append({"reason":[],"final_request":[],"user":[]})
+                    # final_dictionary = {**final_dictionary, **d_dictionary}
+                    # x.append(final_dictionary)
                     return jsonify(x)
                 if i["status"]=="green":
                     x.append({"all_request":[],"all_request_user":[],"reason":[]})
