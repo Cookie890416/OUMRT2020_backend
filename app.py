@@ -33,7 +33,7 @@ def query_event(driver_id):
                             k.pop("_id")
                             # c_dictionary=k
                             # final_dictionary = {**final_dictionary, **c_dictionary}
-                            x.append(k)
+                            x['all_request_user']=k
                     # d_dictionary={"reason":[],"final_request":[],"user":[]}
                     x.append({"reason":[],"final_request":[],"user":[]})
                     # final_dictionary = {**final_dictionary, **d_dictionary}
@@ -50,19 +50,19 @@ def query_event(driver_id):
                         x.append(j)
                     
                     return jsonify(x)
-                if i["status"]=="red":
-                    x.append({"all_request":[],"all_request_user":[]})
+                # if i["status"]=="red":
+                #     x.append({"all_request":[],"all_request_user":[]})
                     
-                    for j in db.request_collection.find({"event_id": i["event_id"]}):
-                        for k in db.reject_collection.find({"user_id": j["user_id"]}):
+                #     for j in db.request_collection.find({"event_id": i["event_id"]}):
+                #         for k in db.reject_collection.find({"user_id": j["user_id"]}):
 
-                            k.pop("_id")
-                            k.pop("user_id")
-                            r=k.FindIndex(s.event_id.Equals("002"))
-                            x.append(r.get("reason"))
+                #             k.pop("_id")
+                #             k.pop("user_id")
+                #             r=k.FindIndex(s.event_id.Equals("002"))
+                #             x.append(r.get("reason"))
 
-                    x.append({"final_request":[],"user":[]})
-                    return jsonify(x)
+                #     x.append({"final_request":[],"user":[]})
+                #     return jsonify(x)
     else:
         return 'No user found!'
 # @app.route('/query_user/<string:user_id>/<string:status>')
