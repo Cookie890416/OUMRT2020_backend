@@ -25,6 +25,7 @@ def query_driverevent(driver_id):
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
                         for k in db.user_collection.find({"user_id": j.get("user_id")}):
+                            k.pop("_id")
                             i['all_request']=k
                     i.update({"reason":None,"final_request":None,"user":None})
                     x.append(i)
