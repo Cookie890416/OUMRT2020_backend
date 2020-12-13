@@ -12,6 +12,9 @@ app.config["JSON_AS_ASCII"] = False
 @app.route('/')
 def flask_mongodb_atlas():
     return "flask mongodb atlas!"
+@app.route('/test-field',methods=['POST'])
+def showField():
+    return request.data
 @app.route('/query_driver/<string:driver_id>')
 def query_driverevent(driver_id):
     if driver_id:
@@ -62,7 +65,7 @@ def query_driverevent(driver_id):
                     return jsonify(x)
     else:
         return 'No user found!'
-@app.route('/query_passenger/<string:passenger_id>')
+@app.route('/query_passenger/<string:passenger_id>')#乘客綠
 def query_passenger_green(passenger_id):
     if passenger_id:
         current_event = db.current_collection.find({"passenger_id": passenger_id})
