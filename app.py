@@ -101,8 +101,19 @@ def query_passenger_white(user_id):
             i.pop("_id")
             for j in db.current_collection.find({"event_id": i["event_id"]}):
                 j.pop("_id")
-                if i["status"]=="white": 
-                    x.append(j)
+                if j["status"]=="white":
+                    for k in db.reject_collection.find({"user_id": j["user_id"]}):
+                        k.pop("_id")
+                        if k!=null:
+                            j["status"]=="red"
+                            k.pop("user_id")
+                            r=k.get("rejected_event_list")
+                            for s in r:
+                                if s.get("event_id")==i["event_id"]:
+                                    i['reason']=s["reason"]
+            i.update({"all_request":None,"all_request_user":None})
+            i.update({"final_request":None,"user":None})
+            x.append(i)
         return jsonify(x)
     else:
         return 'No user found!'
