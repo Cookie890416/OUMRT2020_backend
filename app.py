@@ -14,7 +14,7 @@ def flask_mongodb_atlas():
     return "flask mongodb atlas!"
 @app.route('/test-field',methods=['POST'])
 def showField():
-    return request.data
+    return request.text
 @app.route('/query_driver/<string:driver_id>')
 def query_driverevent(driver_id):
     if driver_id:
@@ -114,9 +114,9 @@ def query_passenger_white(user_id):
                             for s in r:
                                 if s.get("event_id")==i["event_id"]:
                                     i['reason']=s["reason"]
-            i.update({"all_request":None,"all_request_user":None})
-            i.update({"final_request":None,"user":None})
-            x.append(i)
+                j.update({"all_request":None,"all_request_user":None})
+                j.update({"final_request":None,"user":None})
+            x.append(j)
         return jsonify(x)
     else:
         return 'No user found!'
