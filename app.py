@@ -96,15 +96,13 @@ def query_passenger_green(passenger_id):
 @app.route('/query_passenger/<string:user_id>')#乘客白
 def query_passenger_white(user_id):
     if user_id:
-        current_event = db.request_collection.find({"user_id": user_id})
         x=[]
-        if current_event:
-            for i in current_event:
-                i.pop("_id")
-                for j in db.user_collection.find({"event_id": i["event_id"]}):
-                    j.pop("_id")
-                    x.append(j)
-                return jsonify(x)
+        for i in db.request_collection.find({"user_id": user_id}):
+            i.pop("_id")
+            for j in db.user_collection.find({"event_id": i["event_id"]}):
+                j.pop("_id")
+                x.append(j)
+            return jsonify(x)
     else:
         return 'No user found!'
 
