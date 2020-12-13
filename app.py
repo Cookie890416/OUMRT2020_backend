@@ -106,6 +106,28 @@ def query_passenger_white(user_id):
         return jsonify(x)
     else:
         return 'No user found!'
+@app.route('/query_passenger/<string:passenger_id>')#乘客紅
+def query_passenger_red(passenger_id):
+    if passenger_id:
+        x=[]
+        for i in db.request_collection.find({"passenger_id": passenger_id}):
+            i.pop("_id")
+            if i["status"]=="red":
+                    for j in db.request_collection.find({"event_id": i["event_id"]}):
+                        for k in db.reject_collection.find({"user_id": j["user_id"]}):
+                            k.pop("_id")
+                            k.pop("user_id")
+                            r=k.get("rejected_event_list")
+                            for s in r:
+                                if s.get("event_id")==i["event_id"]:
+                                    i['reason']=s["reason"]
+                    i.update({"all_request":None,"all_request_user":None})
+                    i.update({"final_request":None,"user":None})
+                    x.append(i)
+                    return jsonify(x)
+        return jsonify(x)
+    else:
+        return 'No user found!'
 
 @app.route('/query/<string:event_id>')
 def query_user(event_id):
