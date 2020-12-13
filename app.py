@@ -65,7 +65,8 @@ def query_event(driver_id):
                             r=k.get("rejected_event_list")
                             for s in r:
                                 if s.get("event_id")==i["event_id"]:
-                                    x.append(s["event_id"])
+                                    i['all_request']=s["event_id"]
+                                    x.append(i)
 
                     x.append({"final_request":[],"user":[]})
                     return jsonify(x)
