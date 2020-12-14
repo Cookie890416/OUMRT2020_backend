@@ -151,8 +151,9 @@ def query_driverevent(driver_id):
 #         return 'No user found!'
 @app.route('/query_passenger/<string:user_id>')#test
 def query_passenger_test(user_id):
-    x=[]
+    
     if user_id:
+        x=[]
         status="no"
         for i in db.reject_collection.find({"user_id": user_id}):
             i.pop("_id")
@@ -169,15 +170,16 @@ def query_passenger_test(user_id):
                 if i!=None:
                     status="green"
         if status=="white":
-            for i in db.user_collection.find({"user_id": user_id}):
-                i.pop("_id")
-                x['user']=i
-                for j in db.current_collection.find({"passenger_id": user_id}):
-                    j.pop("_id")
-                    j.update({"all_request":None,"all_request_user":None,"reason":None,"final_request":None})
-                    x.append(j)
-                
-                
+            result=[]
+            for i in db.request_collection.find({"user_id": user_id}):
+                result.append(i["event_id"])
+            for j in db.current_collection.find({ "event_id": { "$in": x } }):
+                j.pop("_id")
+                j['user']=db.user_collection.find_one({'user_id':j['driver_id']})
+                x.append(j)                
+
+            # i.update({"all_request":None,"all_request_user":None,"reason":None,"final_request":None})
+            # x.append(i)
             return jsonify(x)
         if status=="green":
             for i in db.current_collection.find({"passenger_id": user_id}):
@@ -188,8 +190,15 @@ def query_passenger_test(user_id):
                 i.update({"all_request":None,"all_request_user":None,"reason":None})
                 x.append(i)
             return jsonify(x)
-        
-        
+        if status=="red":
+            for i in db.current_collection.find({"passenger_id": user_id}):
+                i.pop("_id")
+                if i["status"]=="green":
+                    i["status"]="red"
+                for j in db.user_collection.find({"user_id": i["driver_id"]}):
+                    j.pop("_id")
+
+                
 
 @app.route('/query/<string:event_id>')
 def query_user(event_id):
