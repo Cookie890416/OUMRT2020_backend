@@ -161,12 +161,12 @@ def query_passenger_test(user_id):
             i.pop("_id")
             if i!=None:
                 status="red"
-        if status!="no" and status!="red":
+        if status=="no":
             for i in db.request_collection.find({"user_id": user_id}):
                 i.pop("_id")
                 if i!=None:
                     status="white"
-        if status!="no" and status!="red" and status!="white":
+        if status=="no":
             for i in db.current_collection.find({"passenger_id": user_id}):
                 i.pop("_id")
                 if i!=None:
