@@ -150,7 +150,7 @@ def query_passenger_red(passenger_id):
     else:
         return 'No user found!'
 @app.route('/query_passenger/<string:user_id>')#test
-def query_passenger_red(user_id):
+def query_passenger_test(user_id):
     if user_id:
         x=[]
         for i in db.reject_collection.find({"user_id": user_id}):
@@ -170,7 +170,7 @@ def query_passenger_red(user_id):
         if status=="white":
             for i in db.current_collection.find({"user_id": i["user_id"]}):
                 i.pop("_id")
-                i.update({"all_request":None,"all_request_user":None,"reason":None,"final_request":None})
+                i.update({"all_request":None,"all_request_user":None,"reason":None,"final_request":None,"user":None}})
                 x.append(i)
                 return jsonify(x)
 
