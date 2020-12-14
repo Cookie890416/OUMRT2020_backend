@@ -153,6 +153,7 @@ def query_driverevent(driver_id):
 def query_passenger_test(user_id):
     if user_id:
         x=[]
+        status="no"
         for i in db.reject_collection.find({"user_id": user_id}):
             i.pop("_id")
             if i!=None:
@@ -160,13 +161,15 @@ def query_passenger_test(user_id):
             else:
                 for j in db.request_collection.find({"user_id": user_id}):
                     j.pop("_id")
-                    if j!=None:
+                    if j!=None and status!="red":
                         status="white"
+                        break
                     else:
                         for k in db.current_collection.find({"passenger_id": user_id}):
                             k.pop("_id")
-                            if k!=None:
+                            if k!=None and status!="red" and status!="white":
                                 status="green"
+
         if status=="white":
             return "white"
         if status=="red":
