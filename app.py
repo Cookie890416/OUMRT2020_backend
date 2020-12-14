@@ -173,7 +173,7 @@ def query_passenger_test(user_id):
             result=[]
             for i in db.request_collection.find({"user_id": user_id}):
                 result.append(i["event_id"])
-            for j in db.current_collection.find({ "event_id": { "$in": x } }):
+            for j in db.current_collection.find({ "event_id": { "$in": result } }):
                 j.pop("_id")
                 j['user']=db.user_collection.find_one({'user_id':j['driver_id']})
                 x.append(j)                
