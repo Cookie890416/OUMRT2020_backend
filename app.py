@@ -66,37 +66,37 @@ def query_driverevent(driver_id):
                     return jsonify(x)
     else:
         return 'No user found!'
-@app.route('/query_passenger/<string:passenger_id>')#乘客綠
-def query_passenger_green(passenger_id):
-    if passenger_id:
-        current_event = db.current_collection.find({"passenger_id": passenger_id})
-        x=[]
-        if current_event:
-            for i in current_event:
-                i.pop("_id")
-                # if i["status"]=="white":
-                #     for j in db.user_collection.find({"user_id": i["driver_id"]}):
-                #         j.pop("_id")
-                #     i['user']=j
-                #     i.update({"all_request":None,"all_request_user":None,"reason":None})
-                #     x.append(i)
-                #     return jsonify(x)
-                if i["status"]=="green":
-                    for j in db.user_collection.find({"user_id": i["driver_id"]}):
-                        j.pop("_id")
-                    i['user']=j
-                    i.update({"all_request":None,"all_request_user":None,"reason":None})
-                    x.append(i)  
-                    return jsonify(x)
-                # if i["status"]=="red":
-                #     for j in db.user_collection.find({"user_id": i["driver_id"]}):
-                #         j.pop("_id")
-                #     i['user']=j
-                #     i.update({"all_request":None,"all_request_user":None,"reason":None})
-                #     x.append(i)
-                #     return jsonify(x)
-    else:
-        return 'No user found!'
+# @app.route('/query_passenger/<string:passenger_id>')#乘客綠
+# def query_passenger_green(passenger_id):
+#     if passenger_id:
+#         current_event = db.current_collection.find({"passenger_id": passenger_id})
+#         x=[]
+#         if current_event:
+#             for i in current_event:
+#                 i.pop("_id")
+#                 # if i["status"]=="white":
+#                 #     for j in db.user_collection.find({"user_id": i["driver_id"]}):
+#                 #         j.pop("_id")
+#                 #     i['user']=j
+#                 #     i.update({"all_request":None,"all_request_user":None,"reason":None})
+#                 #     x.append(i)
+#                 #     return jsonify(x)
+#                 if i["status"]=="green":
+#                     for j in db.user_collection.find({"user_id": i["driver_id"]}):
+#                         j.pop("_id")
+#                     i['user']=j
+#                     i.update({"all_request":None,"all_request_user":None,"reason":None})
+#                     x.append(i)  
+#                     return jsonify(x)
+#                 # if i["status"]=="red":
+#                 #     for j in db.user_collection.find({"user_id": i["driver_id"]}):
+#                 #         j.pop("_id")
+#                 #     i['user']=j
+#                 #     i.update({"all_request":None,"all_request_user":None,"reason":None})
+#                 #     x.append(i)
+#                 #     return jsonify(x)
+#     else:
+#         return 'No user found!'
 @app.route('/query_passenger/<string:user_id>')#乘客白
 def query_passenger_white(user_id):
     if user_id:
@@ -168,11 +168,18 @@ def query_passenger_test(user_id):
                             if k!=None:
                                 status="green"
         if status=="white":
-            for i in db.current_collection.find({"user_id": i["user_id"]}):
+            for i in db.current_collection.find({"user_id": user_id}):
                 i.pop("_id")
                 i.update({"all_request":None,"all_request_user":None,"reason":None,"final_request":None,"user":None})
                 x.append(i)
                 return jsonify(x)
+        if status=="green":
+            for i in db.current_collection.find({"user_id": user_id}):
+                i.pop("_id")
+                i.update({"all_request":None,"all_request_user":None,"reason":None,"final_request":None,"user":None})
+                x.append(i)
+                return jsonify(x)
+        
         
 
 @app.route('/query/<string:event_id>')
