@@ -74,19 +74,19 @@ def query_passenger_green(passenger_id):
         if current_event:
             for i in current_event:
                 i.pop("_id")
-                if i["status"]=="white":
-                    for j in db.user_collection.find({"user_id": i["driver_id"]}):
-                        j.pop("_id")
-                    i['user']=j
-                    i.update({"all_request":None,"all_request_user":None,"reason":None})
-                    x.append(i)
-                    return jsonify(x)
+                # if i["status"]=="white":
+                #     for j in db.user_collection.find({"user_id": i["driver_id"]}):
+                #         j.pop("_id")
+                #     i['user']=j
+                #     i.update({"all_request":None,"all_request_user":None,"reason":None})
+                #     x.append(i)
+                #     return jsonify(x)
                 if i["status"]=="green":
                     for j in db.user_collection.find({"user_id": i["driver_id"]}):
                         j.pop("_id")
                     i['user']=j
                     i.update({"all_request":None,"all_request_user":None,"reason":None})
-                    x.append(i)
+                    x.append(i)  
                     return jsonify(x)
                 # if i["status"]=="red":
                 #     for j in db.user_collection.find({"user_id": i["driver_id"]}):
@@ -101,6 +101,7 @@ def query_passenger_green(passenger_id):
 def query_passenger_white(user_id):
     if user_id:
         x=[]
+
         for i in db.request_collection.find({"user_id": user_id}):
             i.pop("_id")
             for j in db.current_collection.find({"event_id": i["event_id"]}):
@@ -121,6 +122,14 @@ def query_passenger_white(user_id):
         return jsonify(x)
     else:
         return 'No user found!'
+@app.route('/query_passenger/<string:user_id>')#test
+def query_passenger_test(user_id):
+    if user_id:
+        x=[]
+        user_data=db.request_collection.find({"user_id": user_id})
+        for i in db.reject_collection.find({"user_id": user_data}):
+
+            
 @app.route('/query_passenger/<string:passenger_id>')#乘客紅
 def query_passenger_red(passenger_id):
     if passenger_id:
@@ -142,6 +151,7 @@ def query_passenger_red(passenger_id):
                 return jsonify(x)
     else:
         return 'No user found!'
+
 
 @app.route('/query/<string:event_id>')
 def query_user(event_id):
