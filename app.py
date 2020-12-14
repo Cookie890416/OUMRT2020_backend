@@ -176,15 +176,15 @@ def query_passenger_test(user_id):
         # if status=="green":
         #     return "green"
         if status=="white":
-            for i in db.current_collection.find({"user_id": user_id}):
+            for i in db.current_collection.find({"passenger_id": user_id}):
                 i.pop("_id")
-                i.update({"all_request":None,"all_request_user":None,"reason":None,"final_request":None,"user":None})
+                i.update({"all_request":None,"all_request_user":None,"reason":None,"user":None})
                 x.append(i)
                 return jsonify(x)
         if status=="green":
-            for i in db.current_collection.find({"user_id": user_id}):
+            for i in db.current_collection.find({"passenger_id": user_id}):
                 i.pop("_id")
-                i.update({"all_request":None,"all_request_user":None,"reason":None,"final_request":None,"user":None})
+                i.update({"all_request":None,"all_request_user":None,"reason":None,"user":None})
                 x.append(i)
                 return jsonify(x)
         
