@@ -110,12 +110,16 @@ def query_passenger_white(user_id):
                     for k in db.reject_collection.find({"user_id": j["user_id"]}):
                         k.pop("_id")
                         if k!=None:
-                            j["status"]="red"
+                            db.current_collection.update(
+                            {"event_id" : i["event_id"]},
+                            {"$set":
+                                {j["status"]: "red"}
+                            },upsert=True)
                             k.pop("user_id")
                             r=k.get("rejected_event_list")
                             for s in r:
                                 if s.get("event_id")==i["event_id"]:
-                                    i['reason']=s["reason"]
+                                    i["reason"]=s["reason"]
                 j.update({"all_request":None,"all_request_user":None})
                 j.update({"final_request":None,"user":None})
             x.append(j)
