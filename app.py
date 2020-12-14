@@ -122,12 +122,6 @@ def query_passenger_white(user_id):
         return jsonify(x)
     else:
         return 'No user found!'
-@app.route('/query_passenger/<string:user_id>')#test
-def query_passenger_test(user_id):
-    if user_id:
-        x=[]
-        user_data=db.request_collection.find({"user_id": user_id})
-        for i in db.reject_collection.find({"user_id": user_data}):
 
             
 @app.route('/query_passenger/<string:passenger_id>')#乘客紅
