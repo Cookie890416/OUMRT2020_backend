@@ -163,7 +163,6 @@ def query_passenger_test(user_id):
                     j.pop("_id")
                     if j!=None and status!="red":
                         status="white"
-                        break
                     else:
                         for k in db.current_collection.find({"passenger_id": user_id}):
                             k.pop("_id")
