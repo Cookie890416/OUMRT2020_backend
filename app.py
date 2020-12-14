@@ -170,9 +170,10 @@ def query_passenger_test(user_id):
         if status=="white":
             for i in db.current_collection.find({"user_id": i["user_id"]}):
                 i.pop("_id")
-                i.update({"all_request":None,"all_request_user":None,"reason":None,"final_request":None,"user":None}})
+                i.update({"all_request":None,"all_request_user":None,"reason":None,"final_request":None,"user":None})
                 x.append(i)
                 return jsonify(x)
+        
 
 @app.route('/query/<string:event_id>')
 def query_user(event_id):
