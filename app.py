@@ -172,24 +172,24 @@ def query_passenger_test(user_id):
                 if i!=None:
                     status="green"
 
-        if status=="white":
-            return "white"
-        if status=="red":
-            return "red"
-        if status=="green":
-            return "green"
         # if status=="white":
-        #     for i in db.current_collection.find({"user_id": user_id}):
-        #         i.pop("_id")
-        #         i.update({"all_request":None,"all_request_user":None,"reason":None,"final_request":None,"user":None})
-        #         x.append(i)
-        #         return jsonify(x)
+        #     return "white"
+        # if status=="red":
+        #     return "red"
         # if status=="green":
-        #     for i in db.current_collection.find({"user_id": user_id}):
-        #         i.pop("_id")
-        #         i.update({"all_request":None,"all_request_user":None,"reason":None,"final_request":None,"user":None})
-        #         x.append(i)
-        #         return jsonify(x)
+        #     return "green"
+        if status=="white":
+            for i in db.current_collection.find({"user_id": user_id}):
+                i.pop("_id")
+                i.update({"all_request":None,"all_request_user":None,"reason":None,"final_request":None,"user":None})
+                x.append(i)
+                return jsonify(x)
+        if status=="green":
+            for i in db.current_collection.find({"user_id": user_id}):
+                i.pop("_id")
+                i.update({"all_request":None,"all_request_user":None,"reason":None,"final_request":None,"user":None})
+                x.append(i)
+                return jsonify(x)
         
         
 
