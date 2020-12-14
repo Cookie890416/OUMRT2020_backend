@@ -122,7 +122,7 @@ def query_passenger_white(user_id):
                                     i["reason"]=s["reason"]
                 j.update({"all_request":None,"all_request_user":None})
                 j.update({"final_request":None,"user":None})
-            x.append(j)
+                x.append(j)
         return jsonify(x)
     else:
         return 'No user found!'
