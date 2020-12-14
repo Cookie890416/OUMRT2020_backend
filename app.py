@@ -151,10 +151,7 @@ def query_driverevent(driver_id):
 #         return 'No user found!'
 @app.route('/query_passenger/<string:user_id>')#test
 def query_passenger_test(user_id):
-    # if user_id:
-    #     red_list=[]
-    #     red_list=db.reject_collection.find({"user_id": user_id})
-        
+    x=[]
     if user_id:
         status="no"
         for i in db.reject_collection.find({"user_id": user_id}):
