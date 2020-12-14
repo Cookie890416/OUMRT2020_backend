@@ -152,29 +152,34 @@ def query_driverevent(driver_id):
 @app.route('/query_passenger/<string:user_id>')#test
 def query_passenger_test(user_id):
     if user_id:
-        x=[]
-        status="no"
-        for i in db.reject_collection.find({"user_id": user_id}):
-            i.pop("_id")
-            if i!=None:
-                status="red"
-            else:
-                for j in db.request_collection.find({"user_id": user_id}):
-                    j.pop("_id")
-                    if j!=None and status!="red":
-                        status="white"
-                    else:
-                        for k in db.current_collection.find({"passenger_id": user_id}):
-                            k.pop("_id")
-                            if k!=None and status!="red" and status!="white":
-                                status="green"
+        red_list=[]
+        red_list=db.reject_collection.find({"user_id": user_id})
+        return red_list
+    # if user_id:
+    #     x=[]
+    #     test=0
+    #     status="no"
+    #     for i in db.reject_collection.find({"user_id": user_id}):
+    #         i.pop("_id")
+    #         if i!=None:
+    #             status="red"
+    #         else:
+    #             for j in db.request_collection.find({"user_id": user_id}):
+    #                 j.pop("_id")
+    #                 if j!=None and status!="red":
+    #                     status="white"
+    #                 else:
+    #                     for k in db.current_collection.find({"passenger_id": user_id}):
+    #                         k.pop("_id")
+    #                         if k!=None and status!="red" and status!="white":
+    #                             status="green"
 
-        if status=="white":
-            return "white"
-        if status=="red":
-            return "red"
-        if status=="green":
-            return "green"
+    #     if status=="white":
+    #         return "white"
+    #     if status=="red":
+    #         return "red"
+    #     if status=="green":
+    #         return "green"
         # if status=="white":
         #     for i in db.current_collection.find({"user_id": user_id}):
         #         i.pop("_id")
