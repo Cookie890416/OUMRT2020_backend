@@ -52,7 +52,7 @@ def query_driverevent(driver_id):
                             k.pop("_id")
                             all_request_user.append(k)
                         i['all_request_user']=all_request_user
-                    i.update({"reason":None,"user":None})
+                    i.update({"reason":None,"user":None,"my_request":None})
                     x.append(i)
                     final_result.extend(x)
                 if i["status"]=="green":
@@ -60,23 +60,10 @@ def query_driverevent(driver_id):
                     for k in db.user_collection.find({"user_id": i["passenger_id"]}):
                         k.pop("_id")
                         i['user']=k
-                    i.update({"all_request":None,"all_request_user":None,"reason":None})
+                    i.update({"all_request":None,"all_request_user":None,"reason":None,"my_request":None})
                     x.append(i)
                     final_result.extend(x)
-                if i["status"]=="red":
-                    x=[]
-                    for j in db.request_collection.find({"event_id": i["event_id"]}):
-                        for k in db.reject_collection.find({"user_id": j["user_id"]}):
-                            k.pop("_id")
-                            k.pop("user_id")
-                            r=k.get("rejected_event_list")
-                            for s in r:
-                                if s.get("event_id")==i["event_id"]:
-                                    i['reason']=s["reason"]
-                    i.update({"all_request":None,"all_request_user":None})
-                    i.update({"user":None})
-                    x.append(i)
-                    final_result.extend(x)
+                
             return jsonify(final_result)
     else:
         return 'No user found!'
@@ -110,7 +97,7 @@ def query_passenger_test(user_id):
                 for j in db.user_collection.find({"user_id": user_id}):
                     j.pop("_id")
                     i['user']=j
-                i.update({"all_request":None,"all_request_user":None,"reason":None})
+                i.update({"all_request":None,"all_request_user":None,"reason":None,"my_request":None})
                 x.append(i)
             final_result.extend(x)
         final_status="red"
@@ -129,7 +116,7 @@ def query_passenger_test(user_id):
                     user=db.user_collection.find_one({"user_id":driver})
                     user.pop('_id')
                     eventid['user']=user
-                    eventid.update({"all_request":None,"all_request_user":None,"final_request":None})
+                    eventid.update({"all_request":None,"all_request_user":None,"final_request":None,"my_request":None})
                     x.append(eventid)
             
             final_result.extend(x)
