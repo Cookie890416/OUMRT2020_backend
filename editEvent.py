@@ -7,7 +7,7 @@ editEvent = Blueprint("editEvent",__name__)
 
 @editEvent.route("/alter-event",methods=['POST'])
 def edit():
-    data=request_collection.json
+    data=request.json
     eventID=data['event_id']
     if mongo.current_collection.find_one({"event_id":eventID}) is None:
         abort(400,"Event not found")
@@ -16,7 +16,7 @@ def edit():
     if eventStatus == "green":
         return jsonify({"isSuccess":False,'reason':"You cannot edit this event,it is set."})
     if request_collections is not None:
-        return jsonify({'isSuccess':False,'reason':'You have a request_collection for this event. Please reply first.'})
+        return jsonify({'isSuccess':False,'reason':'You have a request for this event. Please reply first.'})
     else:
         data.pop('event_id')
         for stuff in data:
