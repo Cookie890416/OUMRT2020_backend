@@ -1,5 +1,5 @@
 from flask import Blueprint,request_collection,jsonify,abort
-from . import get_db
+from setup import get_db
 from flask_pymongo import PyMongo
 
 mongo = get_db()

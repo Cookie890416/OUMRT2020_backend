@@ -21,6 +21,7 @@ pymongo==3.11.2
 pytz==2014.4
 six==1.15.0
 sqlparse==0.4.1
+uuid==1.30
 virtualenv==20.2.1
 virtualenvwrapper-win==1.2.6
 Werkzeug==1.0.1

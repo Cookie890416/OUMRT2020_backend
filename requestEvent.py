@@ -1,5 +1,5 @@
 from flask import Blueprint,request,jsonify
-from . import get_db
+from setup import get_db
 from flask_pymongo import PyMongo
 from datetime import datetime as dt,timedelta
 requestEvent = Blueprint("requestEvent",__name__)

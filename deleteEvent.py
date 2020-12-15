@@ -1,6 +1,6 @@
 from flask import Blueprint,request,jsonify,abort
 from flask_pymongo import PyMongo
-from . import get_db
+from setup import get_db
 
 deleteEvent = Blueprint("deleteEvent",__name__)
 mongo = get_db()

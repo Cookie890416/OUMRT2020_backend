@@ -1,6 +1,6 @@
 from flask import Blueprint,request,jsonify
 from flask_pymongo import PyMongo
-from . import get_db
+from setup import get_db
 import uuid
 createEvent=Blueprint("createEvent",__name__)
 mongo = get_db()

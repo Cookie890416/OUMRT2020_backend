@@ -1,7 +1,7 @@
 from flask import Flask,Blueprint,jsonify,request
 from flask_pymongo import PyMongo
 from datetime import datetime as dt
-from . import get_db
+from setup import get_db
 mongo = get_db()
 searchEvent=Blueprint("searchEvent",__name__)
 
