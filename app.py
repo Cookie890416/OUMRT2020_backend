@@ -77,12 +77,12 @@ def query_passenger_test(user_id):
                 result.append(i["event_id"])
             for j in db.current_collection.find({"event_id":{"$in": result}}):
                 j.pop("_id")
-                temp=db.user_collection.find_one({'user_id':j['driver_id']})
-                temp.pop('_id')
-                j['user']=temp
-                temp = db.request_collection.find_one({'user_id':user_id,'event_id':j['event_id']})
-                temp.pop('_id')
-                j['my_request']=temp
+                temp1=db.user_collection.find_one({'user_id':j['driver_id']})
+                temp1.pop('_id')
+                j['user']=temp1
+                temp1 = db.request_collection.find_one({'user_id':user_id,'event_id':j['event_id']})
+                temp1.pop('_id')
+                j['my_request']=temp1
                 j.update({"all_request":None,"all_request_user":None,"reason":None})
                 x.append(j)
             final_result.extend(x)
@@ -100,20 +100,22 @@ def query_passenger_test(user_id):
         final_status="red"
         if final_status=="red":
             x=[]
-            temp=db.reject_collection.find_one({"user_id": user_id})['rejected_event_list']
-            for event in temp:
-                eventid=db.current_collection.find_one({"event_id": event['event_id']})
-                if eventid is None:
-                    continue
-                eventid.pop("_id")
-                eventid['status']="red"
-                eventid['reason']=event['reason']
-                driver=eventid["driver_id"]
-                user=db.user_collection.find_one({"user_id":driver})
-                user.pop('_id')
-                eventid['user']=user
-                eventid.update({"all_request":None,"all_request_user":None,"final_request":None})
-                x.append(eventid)
+            if db.reject_collection.find_one({"user_id": user_id})!=None:
+                temp1=db.reject_collection.find_one({"user_id": user_id})['rejected_event_list']
+                for event in temp1:
+                    eventid=db.current_collection.find_one({"event_id": event['event_id']})
+                    if eventid is None:
+                        continue
+                    eventid.pop("_id")
+                    eventid['status']="red"
+                    eventid['reason']=event['reason']
+                    driver=eventid["driver_id"]
+                    user=db.user_collection.find_one({"user_id":driver})
+                    user.pop('_id')
+                    eventid['user']=user
+                    eventid.update({"all_request":None,"all_request_user":None,"final_request":None})
+                    x.append(eventid)
+            
             final_result.extend(x)
         return jsonify(final_result)
 @app.route('/query/<string:event_id>')
