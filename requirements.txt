@@ -2,6 +2,7 @@ aniso8601==0.82
 appdirs==1.4.4
 asgiref==3.2.10
 click==7.1.2
+DateTime==4.3
 distlib==0.3.1
 dj-database-url==0.5.0
 Django==3.1.2
@@ -24,3 +25,4 @@ virtualenv==20.2.1
 virtualenvwrapper-win==1.2.6
 Werkzeug==1.0.1
 whitenoise==5.2.0
+zope.interface==5.2.0
