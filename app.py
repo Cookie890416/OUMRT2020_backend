@@ -20,12 +20,12 @@ def showField():
 def query_driverevent(driver_id):
     if driver_id:
         current_event = db.current_collection.find({"driver_id": driver_id})
-        x=[]
+        final_result=[]
         if current_event:
             for i in current_event:
                 i.pop("_id")
                 if i["status"]=="white":
-                    j={}
+                    x=[]
                     all_request_user=[]
                     all_request=[]
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
@@ -36,24 +36,34 @@ def query_driverevent(driver_id):
                             k.pop("_id")
                             all_request_user.append(k)
                         i['all_request_user']=all_request_user
-                    i.update({"reason":None,"final_request":None,"user":None})
+                    i.update({"reason":None,"user":None})
                     x.append(i)
-                    return jsonify(x)
+                    final_result.extend(x)
                 if i["status"]=="green":
-                    j={}
-                    for j in db.request_collection.find({"event_id": i["event_id"]}):
-                        j.pop("_id")
-                        
+                    x=[]
                     for k in db.user_collection.find({"user_id": i["passenger_id"]}):
                         k.pop("_id")
-                        i['final_request']=j
                         i['user']=k
                     i.update({"all_request":None,"all_request_user":None,"reason":None})
                     x.append(i)
-                    return jsonify(x)
+                    final_result.extend(x)
+                if i["status"]=="red":
+                    x=[]
+                    for j in db.request_collection.find({"event_id": i["event_id"]}):
+                        for k in db.reject_collection.find({"user_id": j["user_id"]}):
+                            k.pop("_id")
+                            k.pop("user_id")
+                            r=k.get("rejected_event_list")
+                            for s in r:
+                                if s.get("event_id")==i["event_id"]:
+                                    i['reason']=s["reason"]
+                    i.update({"all_request":None,"all_request_user":None})
+                    i.update({"user":None})
+                    x.append(i)
+                    final_result.extend(x)
+            return jsonify(final_result)
     else:
         return 'No user found!'
-
 @app.route('/query_passenger/<string:user_id>')#test
 def query_passenger_test(user_id):
     if user_id:
