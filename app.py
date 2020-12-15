@@ -94,7 +94,7 @@ def query_passenger_test(user_id):
             x=[]
             for i in db.current_collection.find({"passenger_id": user_id}):
                 i.pop("_id")
-                for j in db.user_collection.find({"user_id": user_id}):
+                for j in db.user_collection.find({"user_id": i["driver_id"]}):
                     j.pop("_id")
                     i['user']=j
                 i.update({"all_request":None,"all_request_user":None,"reason":None,"my_request":None})
