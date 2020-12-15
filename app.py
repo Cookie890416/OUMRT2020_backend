@@ -4,13 +4,13 @@ from flask import json
 from flask import jsonify
 import os
 from datetime import datetime
-from . import create_app
-from . import get_db
-from .createEvent import createEvent
-from .deleteEvent import deleteEvent
-from .requestEvent import requestEvent
-from .searchEvent import searchEvent
-from .editEvent import editEvent
+from setup import create_app
+from setup import get_db
+from createEvent import createEvent
+from deleteEvent import deleteEvent
+from requestEvent import requestEvent
+from searchEvent import searchEvent
+from editEvent import editEvent
 
 # CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
 # client = pymongo.MongoClient(CONNECTION_STRING)
