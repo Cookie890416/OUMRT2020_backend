@@ -1,4 +1,4 @@
-from flask import Blueprint,request_collection,jsonify,abort
+from flask import Blueprint,request,jsonify,abort
 from setup import get_db
 from flask_pymongo import PyMongo
 
