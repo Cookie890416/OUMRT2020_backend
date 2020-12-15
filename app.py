@@ -3,13 +3,28 @@ from flask_pymongo import pymongo
 from flask import json
 from flask import jsonify
 import os
-from DateTime import DateTime
-CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
-client = pymongo.MongoClient(CONNECTION_STRING)
-db = client.flask_mongodb_atlas
-user_collection = pymongo.collection.Collection(db,'user_collection')
-app = Flask(__name__)
+from datetime import datetime
+from . import create_app
+from . import get_db
+from .createEvent import createEvent
+from .deleteEvent import deleteEvent
+from .requestEvent import requestEvent
+from .searchEvent import searchEvent
+from .editEvent import editEvent
+
+# CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
+# client = pymongo.MongoClient(CONNECTION_STRING)
+# db = client.flask_mongodb_atlas
+# app = Flask(__name__)
+app = create_app()
+db = get_db()
 app.config["JSON_AS_ASCII"] = False
+
+app.register_blueprint(createEvent)
+app.register_blueprint(deleteEvent)
+app.register_blueprint(requestEvent)
+app.register_blueprint(searchEvent)
+app.register_blueprint(editEvent)
 @app.route('/')
 def flask_mongodb_atlas():
     return "flask mongodb atlas!"
