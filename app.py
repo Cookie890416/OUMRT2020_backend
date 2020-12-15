@@ -102,6 +102,7 @@ def query_passenger_test(user_id):
                 user=db.user_collection.find_one({"user_id":driver})
                 user.pop('_id')
                 eventid['user']=user
+                eventid.update({"all_request":None,"all_request_user":None,"final_request":None})
                 x.append(eventid)
             final_result.extend(x)
         return jsonify(final_result)
