@@ -3,6 +3,7 @@ from flask_pymongo import pymongo
 from flask import json
 from flask import jsonify
 import os
+from datetime import datetime
 from setup import create_app
 from setup import get_db
 from createEvent import createEvent
