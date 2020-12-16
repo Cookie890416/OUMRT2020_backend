@@ -8,8 +8,6 @@ mongo = get_db()
 def create():
     event=request.json
     try:
-        event.pop('request')
-        event.pop('user')
         event['event_id']=str(uuid.uuid4())
     except Exception as e:
         return jsonify({"isSuccess":False,"reason":str(event)})
