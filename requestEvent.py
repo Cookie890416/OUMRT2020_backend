@@ -32,7 +32,7 @@ def requestAdd():
     if  mongo.current_collection.find_one({'event_id':requestObj['event_id']}) is None:
         return jsonify({"isSuccess":False,"reason":"You are requesting a none existing event."})    
     if mongo.request_collection.find_one({'event_id':requestObj['event_id'],"user_id":requestObj['user_id']}) is not None:
-        return 
+        return jsonify({"isSuccess":False,"reason":"You already requested this event."})
     mongo.request_collection.insert_one(requestObj)
     userID = requestObj['user_id']
     formatString = "%Y-%m-%d %H:%M"
