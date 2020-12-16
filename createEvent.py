@@ -12,7 +12,7 @@ def create():
         event.pop('user')
         event['event_id']=str(uuid.uuid4())
     except Exception as e:
-        return jsonify({"isSuccess":False,"reason":str(e)+" Event setup failed"})
+        return jsonify({"isSuccess":False,"reason":str(event)})
     try:
         mongo.current_collection.insert_one(event)
     except Exception as e:
