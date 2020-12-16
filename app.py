@@ -56,10 +56,12 @@ def query_driverevent(driver_id):
                     final_result.extend(x)
                 if i["status"]=="green":
                     x=[]
+                    trash2=i["final_request"]
+                    trash2.pop("_id")
                     for k in db.user_collection.find({"user_id": i["passenger_id"]}):
                         k.pop("_id")
                         i['user']=k
-                    i.update({"all_request":None,"all_request_user":None,"reason":None,"my_request":None})
+                    i.update({"final_request":trash2,"all_request":[],"all_request_user":[],"reason":None,"my_request":None})
                     x.append(i)
                     final_result.extend(x)
                 
@@ -87,7 +89,7 @@ def query_passenger_test(user_id):
                 temp1 = db.request_collection.find_one({'user_id':user_id,'event_id':j['event_id']})
                 temp1.pop('_id')
                 j['my_request']=temp1
-                j.update({"all_request":None,"all_request_user":None,"reason":None})
+                j.update({"all_request":[],"all_request_user":[],"reason":None})
                 x.append(j)
             final_result.extend(x)
         final_status="green"
@@ -101,7 +103,7 @@ def query_passenger_test(user_id):
                 for j in db.user_collection.find({"user_id": i["driver_id"]}):
                     j.pop("_id")
                     i['user']=j
-                i.update({"final_request":trash,"all_request":None,"all_request_user":None,"reason":None,"my_request":None})
+                i.update({"final_request":trash,"all_request":[],"all_request_user":[],"reason":None,"my_request":None})
                 x.append(i)
             final_result.extend(x)
         final_status="red"
@@ -123,7 +125,7 @@ def query_passenger_test(user_id):
                     user=db.user_collection.find_one({"user_id":driver})
                     user.pop('_id')
                     eventid['user']=user
-                    eventid.update({"all_request":None,"all_request_user":None,"final_request":None,"my_request":None})
+                    eventid.update({"all_request":[],"all_request_user":[],"final_request":None,"my_request":None})
                     x.append(eventid)
             
             final_result.extend(x)
