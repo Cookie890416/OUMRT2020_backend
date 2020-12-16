@@ -126,6 +126,7 @@ def query_passenger_test(user_id):
             
             final_result.extend(x)
         print("HERE")
+        print(final_result)
         return jsonify(final_result)
 @app.route('/query/<string:event_id>')
 def query_user(event_id):
