@@ -46,12 +46,12 @@ def query_driverevent(driver_id):
                     for j in db.request_collection.find({"event_id": i["event_id"]}):
                         j.pop("_id")
                         all_request.append(j)
-                        i['all_request']=all_request
+                        # i['all_request']=all_request
                         for k in db.user_collection.find({"user_id": j["user_id"]}):
                             k.pop("_id")
                             all_request_user.append(k)
-                        i['all_request_user']=all_request_user
-                    i.update({"reason":None,"user":None,"my_request":None})
+                        # i['all_request_user']=all_request_user
+                    i.update({"all_request_user":all_request_user,"all_request":all_request,"reason":None,"user":None,"my_request":None})
                     x.append(i)
                     final_result.extend(x)
                 if i["status"]=="green":
