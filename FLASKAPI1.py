@@ -6,6 +6,11 @@ from flask_pymongo import pymongo
 from flask.json import jsonify
 from setup import create_app
 from setup import get_db
+from createEvent import createEvent
+from deleteEvent import deleteEvent
+from requestEvent import requestEvent
+from searchEvent import searchEvent
+from editEvent import editEvent
 # app = Flask(__name__)
 # app.config["JSON_AS_ASCII"] = False
 # CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
