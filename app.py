@@ -1,11 +1,8 @@
-from flask import Flask,request, render_template
+from flask import Flask,request
 from flask_pymongo import pymongo
 from flask import json
 from flask import jsonify
 import os
-import uuid
-import json
-from flask.json import jsonify
 from setup import create_app
 from setup import get_db
 from createEvent import createEvent
@@ -135,76 +132,6 @@ def query_user(event_id):
             return jsonify(x)
     else:
         return 'No user found!'
-@app.route('/register',methods=['GET', 'POST'])
-def post_data():
-    if request.method == 'POST':
-        authData=json.loads(request.form['auth'])
-        data=json.loads(request.form['user'])
-        user_id=str(uuid.uuid1())
-        data['user_id']=user_id
-        rate={}
-        rate['score']=0
-        rate['times']=0
-        data['rate']=rate
-        authData['user_id']=user_id
-        db.user_collection.insert(data)
-        db.auth_collection.insert(authData)
-        return"registed"
-    else:
-        return"what"
-     
-
-@app.route('/find/<string:user_id>')
-def find_data(name):
-    if name:
-        users = json(db.user_collection.find({'name':name}))
-        x=[]
-        for user in users:
-            user.pop("_id")
-            x.append(user)
-        return jsonify(x)
-
-@app.route('/modify',methods=["POST"])
-def modify_data():
-    dic=json.loads(request.form['user'])
-    db.user_collection.update(
-        {"user_id" : dic.get('user_id')},
-        {"$set":{
-           "name" :dic.get('name'),
-           "phone_num" : dic.get('phone_num'),
-           "sex" : dic.get('sex'),
-           "weight" :dic.get('weight'),
-           "picture_url" : dic.get('picture_url'),
-        }
-        },upsert=True)
-    return"modified"
-
-@app.route('/score',methods=["POST"])
-def score_data():
-    user_id=request.form['user_id']
-    score=request.form['score']
-    oriRate = db.user_collection.find_one({'user_id':user_id}).get('rate')
-    ratedScore=(oriRate.get('score')*oriRate.get('times')+int(score))/(int(oriRate.get('times'))+int(1))
-    ratedTime=int(oriRate.get('times'))+int(1)
-    ratedRate={}
-    ratedRate['score']=ratedScore
-    ratedRate['times']=ratedTime
-    db.user_collection.update(
-        {"user_id" : user_id},
-        {"$set":{
-           "rate":ratedRate
-        }
-        },upsert=True)
-    return"rated"
-    
-@app.route('/login',methods=["POST"])
-def login():
-    mail=request.form['mail']
-    password=request.form['password']
-    if (db.auth_collection.find_one({'mail':mail,'password':password})):
-        return (db.auth_collection.find_one({'mail':mail,'password':password}).get('user_id'))
-    else:
-        return False
 if __name__ == '__main__':
     app.debug = True
     port = int(os.environ.get('PORT', 5000))
