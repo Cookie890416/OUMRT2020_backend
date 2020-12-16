@@ -19,6 +19,11 @@ from editEvent import editEvent
 app = create_app()
 db = get_db()
 app.config["JSON_AS_ASCII"] = False
+app.register_blueprint(createEvent)
+app.register_blueprint(deleteEvent)
+app.register_blueprint(requestEvent)
+app.register_blueprint(searchEvent)
+app.register_blueprint(editEvent)
 
 @app.route('/')
 def flask_mongodb_atlas():
@@ -113,6 +118,6 @@ def login():
     else:
         return "Fail"
 
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+# if __name__ == '__main__':
+#     port = int(os.environ.get('PORT', 5000))
+#     app.run(host='0.0.0.0', port=port)
