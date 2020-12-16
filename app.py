@@ -108,9 +108,11 @@ def query_passenger_test(user_id):
             x=[]
             if db.reject_collection.find_one({"user_id": user_id})!=None:
                 temp1=db.reject_collection.find_one({"user_id": user_id})['rejected_event_list']
+                print("REJECT FIND")
                 for event in temp1:
                     eventid=db.current_collection.find_one({"event_id": event['event_id']})
                     if eventid is None:
+                        print("event none")
                         continue
                     eventid.pop("_id")
                     eventid['status']="red"
@@ -123,6 +125,7 @@ def query_passenger_test(user_id):
                     x.append(eventid)
             
             final_result.extend(x)
+        print("HERE")
         return jsonify(final_result)
 @app.route('/query/<string:event_id>')
 def query_user(event_id):
