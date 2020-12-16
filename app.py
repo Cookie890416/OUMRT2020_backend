@@ -1,6 +1,5 @@
 from flask import Flask,request
 from flask_pymongo import pymongo
-from flask import json
 from flask import jsonify
 import os
 from datetime import datetime
