@@ -72,9 +72,11 @@ def query_passenger_test(user_id):
         final_result=[]
         final_status="white"
         if final_status=="white":
+            print("white")
             result=[]
             x=[]
             for i in db.request_collection.find({"user_id": user_id}):
+                print("request find")
                 i.pop("_id")
                 result.append(i["event_id"])
             for j in db.current_collection.find({"event_id":{"$in": result}}):
@@ -90,6 +92,7 @@ def query_passenger_test(user_id):
             final_result.extend(x)
         final_status="green"
         if final_status=="green":
+            print("green")
             x=[]
             for i in db.current_collection.find({"passenger_id": user_id}):
                 i.pop("_id")
@@ -101,6 +104,7 @@ def query_passenger_test(user_id):
             final_result.extend(x)
         final_status="red"
         if final_status=="red":
+            print("red")
             x=[]
             if db.reject_collection.find_one({"user_id": user_id})!=None:
                 temp1=db.reject_collection.find_one({"user_id": user_id})['rejected_event_list']
