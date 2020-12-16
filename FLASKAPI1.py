@@ -4,13 +4,11 @@ import uuid
 from flask import Flask, request, render_template
 from flask_pymongo import pymongo
 from flask.json import jsonify
-# app = Flask(__name__)
-# CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
-# client = pymongo.MongoClient(CONNECTION_STRING)
-# db = client.flask_mongodb_atlas
-app = create_app()
-db = get_db()
+app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
+CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
+client = pymongo.MongoClient(CONNECTION_STRING)
+db = client.flask_mongodb_atlas
 @app.route('/')
 def flask_mongodb_atlas():
     return "Welcome to flask demo"
