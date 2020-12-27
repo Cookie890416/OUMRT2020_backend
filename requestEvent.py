@@ -2,6 +2,8 @@ from flask import Blueprint,request,jsonify
 from setup import get_db
 from flask_pymongo import PyMongo
 from datetime import datetime as dt,timedelta
+from informHandler import informUser
+
 requestEvent = Blueprint("requestEvent",__name__)
 mongo = get_db()
 
@@ -51,7 +53,9 @@ def requestAdd():
                 {"event_id":requestObj['event_id'],"interval":timeInterval}
                ]}
         mongo.alert_collection.insert_one(alert)
-    #TODO infrom event driver
+    driverID = mongo.current_collection.find_one({'event_id':requestObj['event_id']})['driver_id']
+    informUser(mongo,driverID,"driver","request",requestObj['event_id'],"You have a request for your event.")
+    #infrom event driver
     return jsonify({"isSuccess":True,"reason":""})
 
 @requestEvent.route('/accept-request',methods=['POST'])
@@ -61,19 +65,19 @@ def requestAccept():
     userID= requestObj['user_id']
     requests=mongo.request_collection.find_one({'event_id':eventID,"user_id":userID})
     mongo.current_collection.update_one({"event_id":eventID},{"$set":{"final_request":requests,"passenger_id":userID,"status":"green"}})
-    #TODO set user info on current Event
     mongo.request_collection.delete_one({'event_id':eventID,"user_id":userID})
     userRequest = mongo.request_collection.find({'event_id':eventID})
     for user in userRequest:
         userID=user["user_id"]
         rejectPeople(userID,eventID)
         deleteAlert(userID,eventID)
-        #delete alert time for every user.
+        informUser(mongo,userID,"passenger","reject",eventID,"You have been rejected by one of your requested driver.")
     mongo.request_collection.delete_many({'event_id':eventID})
-    #TODO delete other request from request table and inform others 
-    #TODO add all other request to reject table and add reason
-    #TODO inform driver and passenger
-    #TODO remove other's alert time
+    #delete other request from request table and inform others 
+    #inform driver and passenger
+    driverID=mongo.current_collection.find_one({'event_id':eventID})['driver_id']
+    informUser(mongo,driverID,"driver","accept",eventID,"You have a event set with a passenger.")
+    informUser(mongo,userID,"passenger","accept",eventID,"You have a event set with a driver.")
     return jsonify({"isSuccess":True,"reason":""})
 
 @requestEvent.route('/reject-event',methods=['POST'])
@@ -85,4 +89,6 @@ def requestReject():
     rejectPeople(userID,eventID,reason)
     deleteAlert(userID,eventID)
     mongo.request_collection.find_one_and_delete({"event_id":eventID,"user_id":userID})
+    informUser(mongo,userID,"passenger","reject",eventID,"You have been rejected by a driver.")
+    #inform user
     return jsonify({"isSuccess":True,"reason":""})
