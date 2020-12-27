@@ -57,13 +57,15 @@ def query():
             continue
         elif userSexNeed == "0" and driverSex==False:
             continue
-        timeInterval = eventCandidate['acceptable_time_interval']
-        formatString = "%Y-%m-%d %H:%M"
-        startTime = dt.strptime(timeInterval[0],formatString)
-        endTime = dt.strptime(timeInterval[1],formatString)
-        userTime = dt.strptime(request.args.get('time'),formatString)
-        if userTime < startTime or userTime > endTime:
-            continue
+        requestTime = request.args.get('time')
+        if requestTime is not "":
+            timeInterval = eventCandidate['acceptable_time_interval']
+            formatString = "%Y-%m-%d %H:%M"
+            startTime = dt.strptime(timeInterval[0],formatString)
+            endTime = dt.strptime(timeInterval[1],formatString)
+            userTime = dt.strptime(request.args.get('time'),formatString)
+            if userTime < startTime or userTime > endTime:
+                continue
         eventCandidate.pop('_id')
         eventObj = eventCandidate
         driverTemp = mongo.user_collection.find_one({'user_id':eventCandidate['driver_id']})
