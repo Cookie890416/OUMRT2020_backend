@@ -3,28 +3,10 @@ from flask_pymongo import PyMongo
 from datetime import datetime
 from setup import get_db
 from informHandler import informUser
+from commonOperation import rejectPeople,deleteAlert,deleteReject
 
 deleteEvent = Blueprint("deleteEvent",__name__)
 mongo = get_db()
-
-def deleteAlert(userID,eventID):
-    userAlertList=mongo.alert_collection.find_one({'user_id':userID})['block_time']
-    for i in range(len(userAlertList)):
-        if userAlertList[i]['event_id']==eventID:
-            userAlertList.pop(i)
-            break
-    mongo.alert_collection.update_one({'user_id':userID},{'$set':{'block_time':userAlertList}})
-
-def deleteReject(userID,eventID):
-    userReject = mongo.reject_collection.find_one({'user_id':userID})
-    if userReject is None:
-        return
-    userRejectList = userReject["rejected_event_list"]
-    for i in range(len(userRejectList)):
-        if userRejectList[i]['event_id'] == eventID:
-            userRejectList.pop(i)
-            break
-    mongo.reject_collection.update_one({'user_id':userID},{'$set':{"rejected_event_list":userRejectList}})
 
 @deleteEvent.route('/delete-event',methods=['POST'])
 def delete():
@@ -32,13 +14,16 @@ def delete():
     eventID = stuff['event_id']
     operation = stuff['operation']
     if operation == 'delete':
-        requests=mongo.request_collection.find_one({'event_id':eventID})
+        requests=mongo.request_collection.find({'event_id':eventID})
         if requests is not None:
-            return jsonify({"isSuccess":False,"reason":"You have a request for this event. Please reply first."}) 
-        else:
-            dropEvent = mongo.current_collection.find_one({'event_id':eventID})
-            deleteAlert(dropEvent['driver_id'],eventID)
-            mongo.current_collection.find_one_and_delete({'event_id':eventID})
+            for userRequest in requests:
+                userID=userRequest['user_id']
+                rejectPeople(userID,eventID)
+                deleteAlert(userID,eventID)
+                informUser(mongo,userID,"passenger","reject",eventID," The driver has deleted the event you requested.")
+        dropEvent = mongo.current_collection.find_one({'event_id':eventID})
+        deleteAlert(dropEvent['driver_id'],eventID)
+        mongo.current_collection.find_one_and_delete({'event_id':eventID})
         return jsonify({"status":True,"reason":""})
     elif operation == 'drop':
         dropEvent = mongo.current_collection.find_one({'event_id':eventID})
@@ -51,7 +36,6 @@ def delete():
         dropEvent['is_rated']=0
         mongo.past_collection.insert_one(dropEvent)
         mongo.current_collection.find_one_and_delete({'event_id':eventID})
-        #notify driver and passenger
         #TODO delete reject table
         return jsonify({"status":True,"reason":""})
     elif operation == 'finish':
@@ -60,12 +44,11 @@ def delete():
         deleteAlert(dropEvent['passenger_id'],eventID)
         informUser(mongo,dropEvent['driver_id'],"driver","finish",eventID,"One of your event is finished, consider giving a rating.")
         informUser(mongo,dropEvent['passenger_id'],"passenger","finish",eventID,"One of your event is finished, consider giving a rating.")
-        dropEvent['status']='grey'
+        dropEvent['status']='gray'
         dropEvent.pop('_id')
         dropEvent['is_rated']=0
         mongo.past_collection.insert_one(dropEvent)
         mongo.current_collection.find_one_and_delete({'event_id':eventID})
-        #notify driver and passenger
         #TODO delete reject table
         return jsonify({"status":True,"reason":""})
     else:
