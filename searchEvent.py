@@ -17,6 +17,7 @@ def query():
         userSex=1
     userWeight=mongo.user_collection.find_one({'user_id':userID})['weight']
     db_filter['max_weight']={'$gt':userWeight}
+    db_filter['driver_id']={'$ne':userID}
     driverList=[]
     name=request.args.get('driver_name')
     if name is not "":
