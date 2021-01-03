@@ -11,6 +11,7 @@ from requestEvent import requestEvent
 from searchEvent import searchEvent
 from editEvent import editEvent
 from searchPast import searchPast
+from getInform import getInform
 
 # CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
 # client = pymongo.MongoClient(CONNECTION_STRING)
@@ -26,6 +27,7 @@ app.register_blueprint(requestEvent)
 app.register_blueprint(searchEvent)
 app.register_blueprint(editEvent)
 app.register_blueprint(searchPast)
+app.register_blueprint(getInform)
 
 @app.route('/')
 def flask_mongodb_atlas():
