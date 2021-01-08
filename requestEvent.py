@@ -45,6 +45,7 @@ def requestAccept():
     userID= requestObj['user_id']
     requests=mongo.request_collection.find_one({'event_id':eventID,"user_id":userID})
     mongo.current_collection.update_one({"event_id":eventID},{"$set":{"final_request":requests,"passenger_id":userID,"status":"green"}})
+    mongo.request_collection.delete_one({'event_id':eventID,"user_id":userID})
     userRequest = mongo.request_collection.find({'event_id':eventID})
     for user in userRequest:
         userID=user["user_id"]
@@ -71,7 +72,6 @@ def requestAccept():
         mongo.alert_collection.update_one({'user_id':driverID},{"$set":{"blockTime":blockTime}})        
     else:
         pass
-    mongo.request_collection.delete_one({'event_id':eventID,"user_id":userID})
     return jsonify({"isSuccess":True,"reason":""})
 
 @requestEvent.route('/reject-event',methods=['POST'])

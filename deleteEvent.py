@@ -25,7 +25,7 @@ def delete():
         dropEvent = mongo.current_collection.find_one({'event_id':eventID})
         deleteAlert(dropEvent['driver_id'],eventID)
         mongo.current_collection.find_one_and_delete({'event_id':eventID})
-        return jsonify({"status":True,"reason":""})
+        return jsonify({"isSuccess":True,"reason":""})
     elif operation == 'drop':
         dropEvent = mongo.current_collection.find_one({'event_id':eventID})
         deleteAlert(dropEvent['driver_id'],eventID)
@@ -38,7 +38,7 @@ def delete():
         mongo.past_collection.insert_one(dropEvent)
         mongo.current_collection.find_one_and_delete({'event_id':eventID})
         #TODO delete reject table
-        return jsonify({"status":True,"reason":""})
+        return jsonify({"isSuccess":True,"reason":""})
     elif operation == 'finish':
         dropEvent = mongo.current_collection.find_one({'event_id':eventID})
         deleteAlert(dropEvent['driver_id'],eventID)
@@ -76,11 +76,11 @@ def delete():
             duration = nextTime - startTime.date()
             startTime = startTime+duration
             endTime = endTime+duration
-            dropEvent['acceptable_time_interval'][0]=startTime
-            dropEvent['acceptable_time_interval'][1]=endTime
+            dropEvent['acceptable_time_interval'][0]=startTime.strftime(formatString)
+            dropEvent['acceptable_time_interval'][1]=endTime.strftime(formatString)
             mongo.current_collection.insert_one(dropEvent)
         mongo.current_collection.find_one_and_delete({'event_id':eventID})
         #TODO delete reject table
-        return jsonify({"status":True,"reason":""})
+        return jsonify({"isSuccess":True,"reason":""})
     else:
         return abort(400, 'Unknown operation')

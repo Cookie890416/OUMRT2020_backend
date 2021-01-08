@@ -65,6 +65,7 @@ def query_driverevent(driver_id):
                     x=[]
                     trash2=i["final_request"]
                     trash2.pop("_id")
+                    print(trash2)
                     for k in db.user_collection.find({"user_id": i["passenger_id"]}):
                         k.pop("_id")
                         i['user']=k
@@ -105,6 +106,7 @@ def query_passenger_test(user_id):
             x=[]
             for i in db.current_collection.find({"passenger_id": user_id}):
                 i.pop("_id")
+                print(i)
                 trash=i["final_request"]
                 trash.pop("_id")
                 for j in db.user_collection.find({"user_id": i["driver_id"]}):
@@ -166,7 +168,7 @@ def alert_time():
             endTime=i["interval"][1]
             d_time = dt.strptime(startTime, "%Y-%m-%d %H:%M")
             d_time1 =  dt.strptime(endTime, "%Y-%m-%d %H:%M")
-            if time>d_time and time<d_time1:
+            if time>=d_time and time<=d_time1:
                 eventid=db.current_collection.find_one({"event_id": i["event_id"]})
                 eventid.pop("_id")
                 # return eventid["event_name"]
@@ -194,7 +196,7 @@ def alert_timeInterval():
             endTime=i["interval"][1]
             start = dt.strptime(startTime, "%Y-%m-%d %H:%M")
             end =  dt.strptime(endTime, "%Y-%m-%d %H:%M")
-            if (query_TimeStart<start and query_TimeEnd>start) or (query_TimeStart>start and query_TimeStart<end):
+            if (query_TimeStart<=start and query_TimeEnd>=start) or (query_TimeStart>=start and query_TimeStart<=end):
                 eventid=db.current_collection.find_one({"event_id": i["event_id"]})
                 eventid.pop("_id")
                 # return eventid["event_name"]
@@ -230,8 +232,8 @@ def post_data():
 
 @app.route('/newPassword',methods=["POST"])
 def new_password():
-    mail=request.form['mail']
-    password=request.form['password']
+    mail=request.form.get('mail')
+    password=request.form.get('password')
     db.auth_collection.update(
         {"mail" : mail},
         {"$set":{
@@ -239,7 +241,6 @@ def new_password():
         }
         },upsert=True)
     return jsonify({"isSuccess":True,"reason":""})
-    
 
 
 @app.route('/accountExist',methods=["POST"])
@@ -266,7 +267,7 @@ def show():
 @app.route('/alter-user',methods=["POST"])
 def modify_data():
     dic=request.json
-    if(dic.get('user_id')):
+    if(db.user_collection.find_one({'user_id':dic.get('user_id')})):
         db.user_collection.update(
             {"user_id" : dic.get('user_id')},
             {"$set":{
@@ -278,7 +279,13 @@ def modify_data():
             },upsert=True)
         ack={"isSuccess":True,
         "reason":""}
-    return ack
+        return ack
+    else:
+        return{
+            "isSuccess":False,
+        "reason":""
+        }
+
 
 @app.route('/score',methods=["POST"])
 def score_data():
@@ -348,7 +355,20 @@ def login():
         x.pop("_id")
         return jsonify(x)
     else:
-        return "Fail"
+        foul={
+                "name": "",
+                "phone_num": "",
+                "sex": False,
+                "token":"" ,
+                "weight": 0,
+                "user_id": "Fail",
+                "rate": {
+                    "score": 0,
+                    "times": 0
+                },
+                "picture_url": ""
+         }
+        return foul 
 if __name__ == '__main__':
     app.debug = True
     port = int(os.environ.get('PORT', 5602))
