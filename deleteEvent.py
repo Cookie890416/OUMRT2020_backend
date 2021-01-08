@@ -1,9 +1,10 @@
 from flask import Blueprint,request,jsonify,abort
 from flask_pymongo import PyMongo
-from datetime import datetime
 from setup import get_db
 from informHandler import informUser
 from commonOperation import rejectPeople,deleteAlert,deleteReject
+from datetime import datetime as dt,timedelta,date
+import uuid
 
 deleteEvent = Blueprint("deleteEvent",__name__)
 mongo = get_db()
@@ -48,6 +49,36 @@ def delete():
         dropEvent.pop('_id')
         dropEvent['is_rated']=0
         mongo.past_collection.insert_one(dropEvent)
+        #check repeat and add back
+        if any(dropEvent['repeat']):     
+            dropEvent.pop('is_rated')
+            dropEvent.pop('passenger_id')
+            dropEvent.pop('final_request')
+            dropEvent['status']='white'
+            dropEvent['event_id']=str(uuid.uuid4())
+            timeInterval=dropEvent['acceptable_time_interval']
+            formatString = "%Y-%m-%d %H:%M"
+            today = date.today().weekday()
+            repeat=dropEvent['repeat']
+            i=(today+1)%7
+            #find next 'true'
+            while i!=today:
+                if repeat[i]:
+                    break
+                i=(i+1)%7
+            if i == today:
+                i = 7
+            else:
+                i = ((i-today)%7)
+            nextTime=date.today()+timedelta(days=i)
+            startTime = dt.strptime(timeInterval[0],formatString)
+            endTime = dt.strptime(timeInterval[1],formatString)
+            duration = nextTime - startTime.date()
+            startTime = startTime+duration
+            endTime = endTime+duration
+            dropEvent['acceptable_time_interval'][0]=startTime
+            dropEvent['acceptable_time_interval'][1]=endTime
+            mongo.current_collection.insert_one(dropEvent)
         mongo.current_collection.find_one_and_delete({'event_id':eventID})
         #TODO delete reject table
         return jsonify({"status":True,"reason":""})

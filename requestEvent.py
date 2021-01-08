@@ -45,7 +45,6 @@ def requestAccept():
     userID= requestObj['user_id']
     requests=mongo.request_collection.find_one({'event_id':eventID,"user_id":userID})
     mongo.current_collection.update_one({"event_id":eventID},{"$set":{"final_request":requests,"passenger_id":userID,"status":"green"}})
-    mongo.request_collection.delete_one({'event_id':eventID,"user_id":userID})
     userRequest = mongo.request_collection.find({'event_id':eventID})
     for user in userRequest:
         userID=user["user_id"]
@@ -53,11 +52,26 @@ def requestAccept():
         deleteAlert(userID,eventID)
         informUser(mongo,userID,"passenger","reject",eventID,"You have been rejected by one of your requested driver.")
     mongo.request_collection.delete_many({'event_id':eventID})
-    #delete other request from request table and inform others 
-    #inform driver and passenger
     driverID=mongo.current_collection.find_one({'event_id':eventID})['driver_id']
     informUser(mongo,driverID,"driver","accept",eventID,"You have a event set with a passenger.")
     informUser(mongo,userID,"passenger","accept",eventID,"You have a event set with a driver.")
+    formatString = "%Y-%m-%d %H:%M"
+    actualTime = requests["actual_time"]
+    actualTime = dt.strptime(actualTime,formatString)
+    startTime = (actualTime-timedelta(minutes=10)).strftime(formatString)
+    endTime = (actualTime+timedelta(minutes=10)).strftime(formatString)
+    timeInterval=[startTime,endTime]
+    driverAlert=mongo.alert_collection.find_one({'user_id':driverID})
+    if driverAlert is not None:
+        blockTime=driverAlert['block_time']
+        for eventBlockTime in blockTime:
+            if eventBlockTime["event_id"]==eventID:
+                eventBlockTime["interval"]=timeInterval
+                break
+        mongo.alert_collection.update_one({'user_id':driverID},{"$set":{"blockTime":blockTime}})        
+    else:
+        pass
+    mongo.request_collection.delete_one({'event_id':eventID,"user_id":userID})
     return jsonify({"isSuccess":True,"reason":""})
 
 @requestEvent.route('/reject-event',methods=['POST'])
