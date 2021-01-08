@@ -198,10 +198,11 @@ def alert_timeInterval():
             end =  dt.strptime(endTime, "%Y-%m-%d %H:%M")
             if (query_TimeStart<=start and query_TimeEnd>=start) or (query_TimeStart>=start and query_TimeStart<=end):
                 eventid=db.current_collection.find_one({"event_id": i["event_id"]})
-                eventid.pop("_id")
-                # return eventid["event_name"]
-                reason.append(eventid["event_name"])#reason="金瓜石特快車 林森北一日遊 基隆火車站躺著玩"
-                # return jsonify(reason)
+                if eventid != None:
+                    eventid.pop("_id")
+                    # return eventid["event_name"]
+                    reason.append(eventid["event_name"])#reason="金瓜石特快車 林森北一日遊 基隆火車站躺著玩"
+                    # return jsonify(reason)
         reason=" ".join(reason)
     if len(reason)>0:
         return jsonify({"isSuccess":False,"reason":reason})
