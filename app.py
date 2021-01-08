@@ -2,7 +2,7 @@ from flask import Flask,request
 from flask_pymongo import pymongo
 from flask import jsonify
 import os
-from datetime import datetime
+from datetime import datetime as dt
 from setup import create_app
 from setup import get_db
 from createEvent import createEvent
@@ -12,7 +12,9 @@ from searchEvent import searchEvent
 from editEvent import editEvent
 from searchPast import searchPast
 from getInform import getInform
-
+# 岳均
+import json
+import uuid
 # CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
 # client = pymongo.MongoClient(CONNECTION_STRING)
 # db = client.flask_mongodb_atlas
@@ -149,9 +151,207 @@ def query_user(event_id):
             return jsonify(x)
     else:
         return 'No user found!'
+
+@app.route('/alert',methods=['POST'])
+def alert_time():
+    reason=[]
+    temp={}
+    user_id=request.form['user_id']
+    time=request.form['time']
+    time = dt.strptime(time, "%Y-%m-%d %H:%M")
+    if db.alert_collection.find_one({"user_id": user_id}):
+        temp=db.alert_collection.find_one({'user_id':user_id})["block_time"]
+        for i in temp:
+            startTime=i["interval"][0]
+            endTime=i["interval"][1]
+            d_time = dt.strptime(startTime, "%Y-%m-%d %H:%M")
+            d_time1 =  dt.strptime(endTime, "%Y-%m-%d %H:%M")
+            if time>d_time and time<d_time1:
+                eventid=db.current_collection.find_one({"event_id": i["event_id"]})
+                eventid.pop("_id")
+                # return eventid["event_name"]
+                reason.append(eventid["event_name"])#reason=["金瓜石特快車,林森北一日遊,基隆火車站躺著玩"]
+                # return jsonify(reason)
+        reason=" ".join(reason)
+    if len(reason)>0:
+        return jsonify({"isSuccess":False,"reason":reason})
+    else:
+        return jsonify({"isSuccess":True,"reason":""})
+@app.route('/alert_Interval',methods=['POST'])
+def alert_timeInterval():
+    reason=[]
+    temp={}
+    user_id=request.form['user_id']
+    query_TimeStart=request.form['query_TimeStart']
+    query_TimeEnd=request.form['query_TimeEnd']
+    query_TimeStart = dt.strptime(query_TimeStart, "%Y-%m-%d %H:%M")
+    query_TimeEnd = dt.strptime(query_TimeEnd, "%Y-%m-%d %H:%M")
+    temp=db.alert_collection.find_one({'user_id':user_id})
+    if temp is not None:
+        temp=temp["block_time"]
+        for i in temp:
+            startTime=i["interval"][0]
+            endTime=i["interval"][1]
+            start = dt.strptime(startTime, "%Y-%m-%d %H:%M")
+            end =  dt.strptime(endTime, "%Y-%m-%d %H:%M")
+            if (query_TimeStart<start and query_TimeEnd>start) or (query_TimeStart>start and query_TimeStart<end):
+                eventid=db.current_collection.find_one({"event_id": i["event_id"]})
+                eventid.pop("_id")
+                # return eventid["event_name"]
+                reason.append(eventid["event_name"])#reason="金瓜石特快車 林森北一日遊 基隆火車站躺著玩"
+                # return jsonify(reason)
+        reason=" ".join(reason)
+    if len(reason)>0:
+        return jsonify({"isSuccess":False,"reason":reason})
+    else:
+        return jsonify({"isSuccess":True,"reason":""})
+    
+#岳均的
+@app.route('/register',methods=['GET', 'POST'])
+def post_data():
+    if request.method == 'POST':
+        bigObject=(request.json)
+        authData=bigObject.get('auth')
+        data=bigObject.get('user')
+        user_id=str(uuid.uuid1())
+        data['user_id']=user_id
+        rate={}
+        rate['score']=0.0
+        rate['times']=0
+        data['rate']=rate
+        authData['user_id']=user_id
+        db.user_collection.insert(data)
+        db.auth_collection.insert(authData)
+        return jsonify({"isSuccess":True,"reason":""})
+    else:
+        return jsonify({"isSuccess":False,"reason":""})
+     
+
+
+@app.route('/newPassword',methods=["POST"])
+def new_password():
+    mail=request.form['mail']
+    password=request.form['password']
+    db.auth_collection.update(
+        {"mail" : mail},
+        {"$set":{
+           "password" :password
+        }
+        },upsert=True)
+    return jsonify({"isSuccess":True,"reason":""})
+    
+
+
+@app.route('/accountExist',methods=["POST"])
+def check():
+    mail=request.form['mail']
+    print (mail)
+    mailExist = db.auth_collection.find_one({'mail':mail})
+    ack={}
+    if (mailExist):
+        ack={"isSuccess":True,
+        "reason":""}
+    else:
+        ack={"isSuccess":False,
+        "reason":""}
+    return ack
+    
+@app.route('/showData',methods=["POST"])
+def show():
+    user_id=request.form['user_id']
+    x = db.user_collection.find_one({'user_id':user_id})
+    x.pop("_id")
+    return jsonify(x)
+
+@app.route('/alter-user',methods=["POST"])
+def modify_data():
+    dic=request.json
+    if(dic.get('user_id')):
+        db.user_collection.update(
+            {"user_id" : dic.get('user_id')},
+            {"$set":{
+                "name" :dic.get('name'),
+                "phone_num" : dic.get('phone_num'),
+                "weight" :dic.get('weight'),
+                "picture_url" : dic.get('picture_url'),
+            }
+            },upsert=True)
+        ack={"isSuccess":True,
+        "reason":""}
+    return ack
+
+@app.route('/score',methods=["POST"])
+def score_data():
+    event_id=request.form['event_id']
+    user_id=request.form['user_id']
+    score=request.form['score']
+    def ratePeople(score):
+        oriRate = db.user_collection.find_one({'user_id':user_id}).get('rate')
+        ratedScore=(oriRate.get('score')*int(oriRate.get('times'))+float(score))/(float(oriRate.get('times'))+1)
+        ratedScore=round(ratedScore,10)
+        ratedTime=int(oriRate.get('times'))+int(1)
+        ratedRate={}
+        ratedRate['score']=ratedScore
+        ratedRate['times']=ratedTime
+        db.user_collection.update(
+        {"user_id" : user_id},
+        {"$set":{
+           "rate":ratedRate
+        }
+        },upsert=True)
+    unRatedEvent= db.past_collection.find_one({'event_id':event_id})
+    if(unRatedEvent.get("passenger_id")==user_id):
+        if(unRatedEvent.get("is_rated")%2==0):
+            ratePeople(score)
+            db.past_collection.update(
+            {"event_id" : event_id},
+            {"$inc":{
+                "is_rated":1
+                }
+            })
+            ack={
+                "isSuccess":True,
+                "reason":""
+            }
+        else:
+            ack={
+                "isSuccess":False,
+                "reason":"Overrate"
+            }                    
+    else:
+        if(unRatedEvent.get("is_rated")<2):
+            ratePeople(score)
+            db.past_collection.update(
+            {"event_id" : event_id},
+            {"$inc":{
+                "is_rated":2
+                }
+            })
+            ack={
+                "isSuccess":True,
+                "reason":""
+                }
+        else:
+            ack={
+                "isSuccess":False,
+                "reason":"Overrate"
+                }           
+    return jsonify(ack)
+    
+@app.route('/login',methods=["POST"])
+def login():
+    mail=request.form['mail']
+    password=request.form['password']
+    if (db.auth_collection.find_one({'mail':mail,'password':password})):
+        user_id=db.auth_collection.find_one({'mail':mail,'password':password}).get('user_id')
+        x = db.user_collection.find_one({'user_id':user_id})
+        x.pop("_id")
+        return jsonify(x)
+    else:
+        return "Fail"
 if __name__ == '__main__':
     app.debug = True
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 5602))
     app.run(host='0.0.0.0', port=port)
 # if __name__ == '__main__':
 #     app.run(port=8000)
