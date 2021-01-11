@@ -15,6 +15,7 @@ from getInform import getInform
 # 岳均
 import json
 import uuid
+from werkzeug.security import generate_password_hash,check_password_hash
 # CONNECTION_STRING = "mongodb+srv://cookie:E125330273@cluster0.l02pb.mongodb.net/test_project?retryWrites=true&w=majority"
 # client = pymongo.MongoClient(CONNECTION_STRING)
 # db = client.flask_mongodb_atlas
@@ -219,12 +220,15 @@ def post_data():
         user_id=str(uuid.uuid1())
         data['user_id']=user_id
         rate={}
+        authDataModified={}
         rate['score']=0.0
         rate['times']=0
         data['rate']=rate
-        authData['user_id']=user_id
+        authDataModified['mail']=authData.get("mail")
+        authDataModified['password']=generate_password_hash(authData.get("mail"))
+        authDataModified['user_id']=user_id    
         db.user_collection.insert(data)
-        db.auth_collection.insert(authData)
+        db.auth_collection.insert(authDataModified)
         return jsonify({"isSuccess":True,"reason":""})
     else:
         return jsonify({"isSuccess":False,"reason":""})
@@ -238,7 +242,7 @@ def new_password():
     db.auth_collection.update(
         {"mail" : mail},
         {"$set":{
-           "password" :password
+           "password" :generate_password_hash(password)
         }
         },upsert=True)
     return jsonify({"isSuccess":True,"reason":""})
@@ -345,13 +349,19 @@ def score_data():
                 "reason":"Overrate"
                 }           
     return jsonify(ack)
-    
+
+@app.route('/createHash',methods=["POST"])
+def createHashCo():
+        password=request.form['password']
+        return generate_password_hash(password)
+
 @app.route('/login',methods=["POST"])
 def login():
     mail=request.form['mail']
     password=request.form['password']
-    if (db.auth_collection.find_one({'mail':mail,'password':password})):
-        user_id=db.auth_collection.find_one({'mail':mail,'password':password}).get('user_id')
+    account=db.auth_collection.find_one({'mail':mail})
+    if (check_password_hash(account.get('password'),password)):
+        user_id=account.get('user_id')
         x = db.user_collection.find_one({'user_id':user_id})
         x.pop("_id")
         return jsonify(x)
