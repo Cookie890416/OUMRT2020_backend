@@ -33,8 +33,10 @@ def requestAdd():
                 {"event_id":requestObj['event_id'],"interval":timeInterval}
                ]}
         mongo.alert_collection.insert_one(alert)
-    driverID = mongo.current_collection.find_one({'event_id':requestObj['event_id']})['driver_id']
-    informUser(mongo,driverID,"driver","request",requestObj['event_id'],"You have a request for your event.")
+    currentEvent = mongo.current_collection.find_one({'event_id':requestObj['event_id']})
+    driverID = currentEvent['driver_id']
+    eventName = currentEvent['event_name']
+    informUser(mongo,driverID,"driver","request",eventName,requestObj['event_id'],"You have a request for your event.")
     #infrom event driver
     return jsonify({"isSuccess":True,"reason":""})
 
@@ -47,15 +49,16 @@ def requestAccept():
     mongo.current_collection.update_one({"event_id":eventID},{"$set":{"final_request":requests,"passenger_id":userID,"status":"green"}})
     mongo.request_collection.delete_one({'event_id':eventID,"user_id":userID})
     userRequest = mongo.request_collection.find({'event_id':eventID})
+    currentEvent = mongo.current_collection.find_one({'event_id':eventID})
     for user in userRequest:
         userID=user["user_id"]
         rejectPeople(userID,eventID)
         deleteAlert(userID,eventID)
-        informUser(mongo,userID,"passenger","reject",eventID,"You have been rejected by one of your requested driver.")
+        informUser(mongo,userID,"passenger","reject",currentEvent['event_name'],eventID,"You have been rejected by one of your requested driver.")
     mongo.request_collection.delete_many({'event_id':eventID})
-    driverID=mongo.current_collection.find_one({'event_id':eventID})['driver_id']
-    informUser(mongo,driverID,"driver","accept",eventID,"You have a event set with a passenger.")
-    informUser(mongo,userID,"passenger","accept",eventID,"You have a event set with a driver.")
+    driverID=currentEvent['driver_id']
+    informUser(mongo,driverID,"driver","accept",currentEvent['event_name'],eventID,"You have a event set with a passenger.")
+    informUser(mongo,userID,"passenger","accept",currentEvent['event_name'],eventID,"You have a event set with a driver.")
     formatString = "%Y-%m-%d %H:%M"
     actualTime = requests["actual_time"]
     actualTime = dt.strptime(actualTime,formatString)
@@ -83,6 +86,7 @@ def requestReject():
     rejectPeople(userID,eventID,reason)
     deleteAlert(userID,eventID)
     mongo.request_collection.find_one_and_delete({"event_id":eventID,"user_id":userID})
-    informUser(mongo,userID,"passenger","reject",eventID,"You have been rejected by a driver.")
+    currentEvent = mongo.current_collection.find({"event_id":eventID})
+    informUser(mongo,userID,"passenger","reject",currentEvent['event_name'],eventID,"You have been rejected by a driver.")
     #inform user
     return jsonify({"isSuccess":True,"reason":""})
